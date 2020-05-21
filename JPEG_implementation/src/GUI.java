@@ -35,7 +35,8 @@ public class GUI {
     private JMenuItem openFileItem;
     private JLabel imgLabel;
     private Image img; //Image the user chooses to be compressed.
-    private File file;//file the user opens
+    private String file;//file the user opens
+    private String imageFile;
 
     
     
@@ -57,12 +58,17 @@ public class GUI {
         
         openFileItem.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent ev) {
-        		Image newImage=chooseImage();//on click opens file chooser for user to select the file.
+        		//Image newImage=chooseImage();//on click opens file chooser for user to select the file.
 
+        		
+        		imageFile=chooseImage();
+        		
+        		/*
                 if(newImage!=null) {
                 	deleteComponentsOfPane(frame.getContentPane(), img);//delete the old image
                 	addComponentsToPane(frame.getContentPane(), newImage);//add the new image
                 }
+                */
         	}
         });
         
@@ -76,6 +82,16 @@ public class GUI {
         //adding a button for executing the compression
         JButton doCompression=new JButton("Compress Image");
         frame.getContentPane().add(doCompression, BorderLayout.SOUTH);
+        doCompression.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				JPEG_compr.dct(imageFile);
+				
+				
+			}
+		});
         //add here code for executing algorithm
        
         
@@ -122,7 +138,7 @@ public class GUI {
     }
     
     //user chooses a file from its own directory for the compression
-    private Image chooseImage() {
+    private String chooseImage() {
     	
     	JFileChooser fileChooser= new JFileChooser();
     	Image selectedImg=null;
@@ -138,21 +154,21 @@ public class GUI {
     	
     	if (action == JFileChooser.APPROVE_OPTION) {
     		
-    		file=fileChooser.getSelectedFile();
+    		file=fileChooser.getSelectedFile().getAbsolutePath();
     		
     	}else {
     		JOptionPane.showMessageDialog(frame, "You did not select a file! Please try again!");
     		return null;//user did not choose an image, so null is returned that the old image is not deleted from frame.
     	}
-  
+    	/*
     	try {
 			 selectedImg=ImageIO.read(file);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 	
-		return selectedImg;
+		return file;
     	
     }
     
