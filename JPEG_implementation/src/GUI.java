@@ -87,7 +87,8 @@ public class GUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				JPEG_compr.dct(imageFile);
+				//Mat dct_mat=JPEG_compr.dct(imageFile);//convert image to dct.
+				DCT.divideBlocksDCT(imageFile);
 				
 				
 			}
