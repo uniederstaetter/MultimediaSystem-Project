@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -88,7 +89,9 @@ public class GUI {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				//Mat dct_mat=JPEG_compr.dct(imageFile);//convert image to dct.
-				DCT.divideBlocksDCT(imageFile);
+				List<Mat> dct_converted=DCT.divideBlocksDCT(imageFile);
+				//Quantization.fillMat();
+				List<Mat> quantised=Quantization.quantise(dct_converted);
 				
 				
 			}
