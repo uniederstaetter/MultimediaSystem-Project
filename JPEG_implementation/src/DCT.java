@@ -9,20 +9,22 @@ import org.opencv.imgcodecs.Imgcodecs;
 
 public class DCT {
 	public static final int DCT_ROWS=0;
-	
+	public static int height;
+	public static int width;
 	public static Mat imageToMat(String fileName) {
 		return Imgcodecs.imread(fileName, Imgcodecs.IMREAD_GRAYSCALE);//maybe need imread with some flags so that it is gray-scale
 	}
 	
 	public static List<Mat> divideBlocksDCT(String fileName) {
 		Mat mat = imageToMat(fileName);
+		height=mat.height();
+		width=mat.width();
 		
 		int rowStart;
 		int rowEnd=8;
 		int colStart=0;
 		int colEnd=8;
-		//int size=(int) ((int) Math.ceil(mat.width()/8) *Math.ceil(mat.height()/8));
-		//Mat [] concatMatrix=new Mat [size];
+		
 		List<Mat>concatMatrix=new ArrayList<Mat>();
 		
 		for (rowStart=0;rowEnd<=mat.width();rowEnd+=8) {
@@ -38,7 +40,7 @@ public class DCT {
 			rowStart+=8;
 			
 		}
-		System.out.println(concatMatrix.toString());
+		//System.out.println(concatMatrix.toString());
 		
 		return concatMatrix;
 		

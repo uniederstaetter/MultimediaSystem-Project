@@ -36,8 +36,9 @@ public class GUI {
     private JMenuItem openFileItem;
     private JLabel imgLabel;
     private Image img; //Image the user chooses to be compressed.
-    private String file;//file the user opens
+    private String filepath;//file the user opens
     private String imageFile;
+    Image selectedImg;
 
     
     
@@ -59,17 +60,16 @@ public class GUI {
         
         openFileItem.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent ev) {
-        		//Image newImage=chooseImage();//on click opens file chooser for user to select the file.
-
-        		
+        	
         		imageFile=chooseImage();
         		
-        		/*
-                if(newImage!=null) {
-                	deleteComponentsOfPane(frame.getContentPane(), img);//delete the old image
-                	addComponentsToPane(frame.getContentPane(), newImage);//add the new image
-                }
-                */
+        		if (selectedImg!=null) {
+        			deleteComponentsOfPane(frame.getContentPane(), img);//delete the old image
+                	addComponentsToPane(frame.getContentPane(), selectedImg);//add the new image
+        		}
+        		
+        		
+        
         	}
         });
         
@@ -92,6 +92,10 @@ public class GUI {
 				List<Mat> dct_converted=DCT.divideBlocksDCT(imageFile);
 				//Quantization.fillMat();
 				List<Mat> quantised=Quantization.quantise(dct_converted);
+				/*int width=DCT.height;
+				int height=DCT.width;
+				Mat zigzag=ZigZag.zigZag(quantised, width, height);
+				*/
 				
 				
 			}
@@ -114,7 +118,8 @@ public class GUI {
     
     //used to set up the default selected picture for the compression
     private void displayDefault() {
-    	 File defaultFile= new File("lena.png");
+    	 File defaultFile= new File("lena_grey.png");
+    	 imageFile="lena_grey.png";
          //Setting default image
          try {
 			img=ImageIO.read(defaultFile);
@@ -145,7 +150,7 @@ public class GUI {
     private String chooseImage() {
     	
     	JFileChooser fileChooser= new JFileChooser();
-    	Image selectedImg=null;
+    	File file=null;
     	
     	//allows only images to be read.
     	FileNameExtensionFilter imageFilter = new FileNameExtensionFilter(
@@ -158,21 +163,22 @@ public class GUI {
     	
     	if (action == JFileChooser.APPROVE_OPTION) {
     		
-    		file=fileChooser.getSelectedFile().getAbsolutePath();
+    		file=fileChooser.getSelectedFile();
+    		filepath=fileChooser.getSelectedFile().getAbsolutePath();
     		
     	}else {
     		JOptionPane.showMessageDialog(frame, "You did not select a file! Please try again!");
     		return null;//user did not choose an image, so null is returned that the old image is not deleted from frame.
     	}
-    	/*
+    	
     	try {
 			 selectedImg=ImageIO.read(file);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
 	
-		return file;
+		return filepath;
     	
     }
     
