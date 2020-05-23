@@ -7,54 +7,27 @@ import org.opencv.core.*;
 
 public class ZigZag {
 	
-	//need first to rearange the matrix back to its orginal shape, but does not work!!!!
-	public static Mat zigZag(List<Mat> mat, int width, int height) {//gets each block 8*8 block of DCT
 	
-
-		Mat destMatrix=new Mat();
+	public static List<double []> zigZag(List<Mat> mat) {//gets each block 8*8 block of DCT
+		List<double []> zigZagResult = new ArrayList<>();
 		
-		Core.hconcat(mat, destMatrix);
+		for (Mat m : mat)
+			zigZagResult.add(zigZagMatrix(m));
 		
-		int rowStart;
-		int rowEnd=8;
-		int colStart=0;
-		int colEnd=8;
-		
-		/*
-		for (rowStart=0;rowEnd<=width;rowEnd+=8) {
-			List<Mat> src = Arrays.asList(mat.get(rowStart));
-			Core.hconcat(src, destMatrix);
-			Mat temp=destMatrix;
-			rowStart+=8;
-			rowEnd+=8;
-		}
-			//for(colStart=0; colEnd<=mat.height(); colEnd+=8) {
-		
-	
-		*/
-		return destMatrix;
+		return zigZagResult;
 	}
-
-			
-			
-		//System.out.println(concatanetMatrix.dump());
-		//zigZagMatrix(concatanetMatrix, concatanetMatrix.height(), concatanetMatrix.width());
+	public static double [] zigZagMatrix(Mat mat) {
 		
-	
-		
-	
-	
-	
-	public static void zigZagMatrix(Mat mat, int n, int m) {
-		int row=0, col=0;
-		
-		//true if row needs to be incremented
-		//false if col needs to be incremented.
-		boolean row_inc=false;
-		
-		int mn=Math.min(m,  n);//lower half zig-zag pattern
-		
+		double [] result= {mat.get(0,0)[0],mat.get(0,1)[0], mat.get(1,0)[0],mat.get(2,0)[0],mat.get(1,1)[0],mat.get(0,2)[0],mat.get(0,3)[0],mat.get(1,2)[0],mat.get(2,1)[0], mat.get(3,0)[0],
+		   		        mat.get(4,0)[0], mat.get(3,1)[0], mat.get(2,2)[0],mat.get(1,3)[0],mat.get(0,4)[0],mat.get(0,5)[0],mat.get(1,4)[0],mat.get(2,3)[0],mat.get(3,2)[0],mat.get(4,1)[0],
+				        mat.get(5,0)[0], mat.get(6,0)[0], mat.get(5,1)[0],mat.get(4,2)[0],mat.get(3,3)[0],mat.get(2,4)[0],mat.get(1,5)[0],mat.get(0,6)[0],mat.get(0,7)[0],mat.get(1,6)[0],
+				        mat.get(2,5)[0], mat.get(3,4)[0], mat.get(4,3)[0],mat.get(5,2)[0],mat.get(6,1)[0],mat.get(7,0)[0], mat.get(7,1)[0],mat.get(6,2)[0],mat.get(5,3)[0],mat.get(4,4)[0],
+				        mat.get(3,5)[0], mat.get(2,6)[0], mat.get(1,7)[0],mat.get(2,7)[0],mat.get(3,6)[0],mat.get(4,5)[0],mat.get(5,4)[0],mat.get(6,3)[0],mat.get(7,2)[0],mat.get(7,3)[0],
+				        mat.get(6,4)[0], mat.get(5,5)[0], mat.get(4,6)[0],mat.get(3,7)[0],mat.get(4,7)[0],mat.get(5,6)[0],mat.get(6,5)[0],mat.get(7,4)[0],mat.get(7,5)[0],mat.get(6,6)[0],
+				        mat.get(5,7)[0], mat.get(6,7)[0], mat.get(7,6)[0],mat.get(7,7)[0]};
+		return result;
 	}
 	
 
 }
+

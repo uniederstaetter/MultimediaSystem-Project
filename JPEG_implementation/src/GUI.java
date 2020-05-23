@@ -72,7 +72,6 @@ public class GUI extends JFrame {
 		// Adds the default image to the frame.
 		displayDefault();
 		
-		// Bis do!
 
 		// adding a button for executing the compression
 		JButton doCompression = new JButton("Compress Image");
@@ -103,14 +102,20 @@ public class GUI extends JFrame {
 		});
 		
 		doCompression.addActionListener(event -> {
-				// Mat dct_mat=JPEG_compr.dct(imageFile);//convert image to dct.
+				
 				List<Mat> dct_converted = DCT.divideBlocksDCT(defaultImgPath);
-				// Quantization.fillMat();
+				
 				List<Mat> quantised = Quantization.quantise(dct_converted);
-				/*
-				 * int width=DCT.height; int height=DCT.width; Mat
-				 * zigzag=ZigZag.zigZag(quantised, width, height);
-				 */
+				
+				List<double []>zigZag=ZigZag.zigZag(quantised);
+				
+				for (double [] zig: zigZag)
+					for (int i=0; i<zig.length; i++) {
+						System.out.print(zig[i]+" ");
+					}
+				
+				
+				 
 		});
 
 		// Display the window.
