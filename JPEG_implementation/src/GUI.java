@@ -110,10 +110,10 @@ public class GUI extends JFrame {
 				List<double []>zigZag=ZigZag.zigZag(quantised);
 				
 				//This part should be incorporated into its own method, then combined with the RLE
-				double delta  = DPCM.prediction(zigZag);
+				double rng  = DPCM.getRange(zigZag);
 				for (double [] zig: zigZag) {
-					double lvl = DPCM.quantiseError(zig[0], delta);
-					System.out.println(lvl);
+					double lvl = DPCM.quantiseError(zig[0], rng);
+					//System.out.println(lvl);
 					System.out.println(DPCM.encode(lvl));
 				}
 				
