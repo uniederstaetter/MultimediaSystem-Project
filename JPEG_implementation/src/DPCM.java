@@ -23,7 +23,7 @@ public class DPCM {
 		return (maxError - minError);
 	}
 	
-	// quantizes the errors in a uniform way given the delta computed with prediction() and updates the predictor
+	// computes the errors, normalizes them in the [0, 2] range, then quantizes them and returns the correspondent level (using a nonlinear approach)
 	public static double quantiseError(double coeff, double range) {
 		//get the actual value of my error
 		double error=Math.abs(coeff-getPredict());
@@ -35,13 +35,13 @@ public class DPCM {
 		//error is normalized, but on the [0,2] range, for convenience
 		double normalizedError = (normRange*error)/range;
 		//System.out.println("Normalized Error = " + normalizedError);
-		//get our actual elvel
+		//Get our actual level: first we compute how many deltas are in it, then round to the minimal distance/level
 		double myLevel = Math.round(normalizedError/normDelta);
 		//System.out.println("Actual level = " + myLevel);
 		//Adjust for non linearity
 		double result = -1;
 		if (myLevel == 0)
-			result = 0;
+			result = 1;
 		else if (myLevel == 256)
 			result = 255;
 		else if (myLevel % 2 == 0)
@@ -72,9 +72,9 @@ public class DPCM {
 	
 	//how to encode the DC coefficient
 	public static String encode(double level) {
-		//Turn it into an object, so we can do fancy things with it. Also disregard the sign, for some reason
+		//Turn it into an object, so we can do fancy things with it
 		Double myObjLevel = new Double(level);
-		//Turn it into int in an elegant way, then its binary representation
+		//Turn it into an int in an elegant way, then into its binary representation
 		String result = Integer.toBinaryString(myObjLevel.intValue());
 		//Add zeroes, in order to always have 8bit words
 		if (result.length() < 8) {

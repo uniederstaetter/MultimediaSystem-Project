@@ -109,16 +109,15 @@ public class GUI extends JFrame {
 				
 				List<double []>zigZag=ZigZag.zigZag(quantised);
 				
-				//This part should be incorporated into its own method, then combined with the RLE
-				double rng  = DPCM.getRange(zigZag);
-				for (double [] zig: zigZag) {
-					double lvl = DPCM.quantiseError(zig[0], rng);
-					//System.out.println(lvl);
-					System.out.println(DPCM.encode(lvl));
-				}
-				
-				
-				
+					for (double[] zig : zigZag) {
+						List<JPEGCategory> rle = HuffmanEncoder.RLE(zig);
+						double rng  = DPCM.getRange(zigZag);
+						double lvl = DPCM.quantiseError(zig[0], rng);
+						System.out.println(DPCM.encode(lvl) + "<<< DC element");
+						for (JPEGCategory r : rle) {
+							System.out.println(r.convertToBinary());
+						}
+					}
 				 
 		});
 
