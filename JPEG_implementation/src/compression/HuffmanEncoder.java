@@ -7,43 +7,43 @@ public class HuffmanEncoder {
 		int myCoeff = Math.abs(doubleObj.intValue());
 		if (myCoeff <=1) { // -1, 1
 			double position = getPosition(coeff, 1);
-			return new JPEGCategory(1, position);
+			return new JPEGCategory(coeff,1, position);
 		}
 		if (myCoeff <=3) { // -3, -2, 2, 3
 			double position = getPosition(coeff, 3);
-			return new JPEGCategory(2, position);
+			return new JPEGCategory(coeff,2, position);
 		}
 		if (myCoeff <=7) { // -7, -6, -5, -4, 4, 5 ,6 ,7
 			double position = getPosition(coeff, 7);
-			return new JPEGCategory(3, position);
+			return new JPEGCategory(coeff,3, position);
 		}
 		if (myCoeff <=15) {
 			double position = getPosition(coeff, 15);
-			return new JPEGCategory(4, position);
+			return new JPEGCategory(coeff,4, position);
 		}
 		if (myCoeff <=31) {
 			double position = getPosition(coeff, 31);
-			return new JPEGCategory(5, position);
+			return new JPEGCategory(coeff,5, position);
 		}
 		if (myCoeff <=63) {
 			double position = getPosition(coeff, 63);
-			return new JPEGCategory(6, position);
+			return new JPEGCategory(coeff,6, position);
 		}
 		if (myCoeff <=127) {
 			double position = getPosition(coeff, 127);
-			return new JPEGCategory(7, position);
+			return new JPEGCategory(coeff,7, position);
 		}
 		if (myCoeff <=255) {
 			double position = getPosition(coeff, 255);
-			return new JPEGCategory(8, position);
+			return new JPEGCategory(coeff,8, position);
 		}
 		if (myCoeff <=511) {
 			double position = getPosition(coeff, 511);
-			return new JPEGCategory(9, position);
+			return new JPEGCategory(coeff,9, position);
 		}
 		if (myCoeff <=1023) {
 			double position = getPosition(coeff, 1023);
-			return new JPEGCategory(10, position);
+			return new JPEGCategory(coeff,10, position);
 		}	
 		return null;
 	}
@@ -80,7 +80,7 @@ public class HuffmanEncoder {
 				if (c < 15) {
 					c++;	
 				} else {
-					JPEGCategory newObj = new JPEGCategory(0, 0);
+					JPEGCategory newObj = new JPEGCategory(arr[i],0, 0);
 					newObj.setRunlength(15);
 					result.add(newObj);
 					c = 0;
@@ -92,10 +92,11 @@ public class HuffmanEncoder {
 				c = 0;
 			}
 		}
-		JPEGCategory finalObj = new JPEGCategory(0, 0);
+		JPEGCategory finalObj = new JPEGCategory(0,0, 0);
 		finalObj.setRunlength(0);
 		result.add(finalObj);
 		return result;
 	}
+	
 	
 }
