@@ -1,3 +1,4 @@
+package compression;
 import java.util.ArrayList;
 
 public class HuffmanEncoder {

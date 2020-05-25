@@ -1,3 +1,4 @@
+package compression;
 
 import java.awt.BorderLayout;
 import java.awt.Image;
@@ -103,21 +104,21 @@ public class GUI extends JFrame {
 		
 		doCompression.addActionListener(event -> {
 				
-				List<Mat> dct_converted = DCT.divideBlocksDCT(defaultImgPath);
+				List<Mat> dct_converted = ForwardDCT.divideBlocksDCT(defaultImgPath);
 				
 				List<Mat> quantised = Quantization.quantise(dct_converted);
 				
 				List<double []>zigZag=ZigZag.zigZag(quantised);
 				
-					for (double[] zig : zigZag) {
-						List<JPEGCategory> rle = HuffmanEncoder.RLE(zig);
-						double rng  = DPCM.getRange(zigZag);
-						double lvl = DPCM.quantiseError(zig[0], rng);
-						System.out.println(DPCM.encode(lvl) + "<<< DC element");
-						for (JPEGCategory r : rle) {
-							System.out.println(r.convertToBinary());
-						}
+				for (double[] zig : zigZag) {
+					List<JPEGCategory> rle = HuffmanEncoder.RLE(zig);
+					double rng  = DPCM.getRange(zigZag);
+					double lvl = DPCM.quantiseError(zig[0], rng);
+					System.out.println(DPCM.encode(lvl) + "<<< DC element");
+					for (JPEGCategory r : rle) {
+						System.out.println(r.convertToBinary());
 					}
+				}
 				 
 		});
 

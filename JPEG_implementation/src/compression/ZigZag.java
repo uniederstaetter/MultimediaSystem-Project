@@ -1,9 +1,8 @@
-import java.lang.reflect.Array;
+package compression;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.opencv.core.*;
+import org.opencv.core.Mat;
 
 public class ZigZag {
 	
