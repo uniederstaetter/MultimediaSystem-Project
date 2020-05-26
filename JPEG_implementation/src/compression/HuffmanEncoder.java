@@ -93,7 +93,7 @@ public class HuffmanEncoder {
 			}
 		}
 		JPEGCategory finalObj = new JPEGCategory(0,0, 0);
-		finalObj.setRunlength(c);
+		finalObj.setRunlength(c-1);//decrement by 1 of counter because for loop goes one step further.
 		result.add(finalObj);
 		
 		JPEGCategory EOB = new JPEGCategory(0,0, 0);
