@@ -111,20 +111,21 @@ public class GUI extends JFrame {
 				List<double []>zigZag=ZigZag.zigZag(quantised);
 				
 				for (double[] zig : zigZag) {
-					List<JPEGCategory> rle = HuffmanEncoder.RLE(zig);
+					
 					double rng  = DPCM.getRange(zigZag);
 					double lvl = DPCM.quantiseError(zig[0], rng);
 					String DCElement=DPCM.encode(lvl);
 					//System.out.println(DPCM.encode(lvl) + "<<< DC element");
+					List<JPEGCategory> rle = HuffmanEncoder.RLE(zig);
+					System.out.println(DCElement);
 					for (JPEGCategory r : rle) {
-						//System.out.println(r.convertToBinary());
 						System.out.println(r.huffmanEncode());
 					}
 					
 				}
-//				List<JPEGCategory>rle=HuffmanEncoder.RLE(zigZag.get(0));
+//				List<JPEGCategory>rle=HuffmanEncoder.RLE(zigZag.get(2));
 //				for(JPEGCategory r: rle) {
-//					System.out.println(r.huffmanEncode());
+//					System.out.println(r.huffmanEncode("Test"));
 //				}
 				
 				 

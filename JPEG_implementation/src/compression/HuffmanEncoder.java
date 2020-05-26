@@ -93,8 +93,12 @@ public class HuffmanEncoder {
 			}
 		}
 		JPEGCategory finalObj = new JPEGCategory(0,0, 0);
-		finalObj.setRunlength(0);
+		finalObj.setRunlength(c);
 		result.add(finalObj);
+		
+		JPEGCategory EOB = new JPEGCategory(0,0, 0);
+		EOB.setRunlength(0);
+		result.add(EOB);
 		return result;
 	}
 	

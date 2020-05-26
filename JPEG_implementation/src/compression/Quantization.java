@@ -15,14 +15,18 @@ public class Quantization {
 	             24,  35,  55,  64,   81,  104,  113,   92,  
 	             49,  64,  78,  87,  103,  121,  120,  101,  
 	             72,  92,  95,  98,  112,  100,  103,   99};
-	            		 
+	
+	static double qualityFactor=90;
 	static Mat quantisMat=fillMat();
 
 	
 	public static Mat fillMat() {
+		double quality=101-qualityFactor;
+		for (int i=0; i< quant_mat.length; i++) {
+			quant_mat[i]=quant_mat[i]*quality;
+		}
 		Mat quantmat=new Mat(8,8, CvType.CV_64FC1);
 		quantmat.put(0, 0, quant_mat);
-		//System.out.println(quantmat.dump());
 		return quantmat;
 	}
 	public static List<Mat> quantise(List<Mat> mat) {//gets each block 8*8 block of DCT
