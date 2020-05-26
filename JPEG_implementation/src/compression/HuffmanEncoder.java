@@ -78,6 +78,11 @@ public class HuffmanEncoder {
 		for (int i = 1; i < arr.length; i++) {				// Starting from 1, because we want to exclude the DC element!
 			if (arr[i] == 0) {
 				if (c < 15) {
+					if(i==arr.length-1) {
+						JPEGCategory newObj = new JPEGCategory(arr[i],0, 0);
+						newObj.setRunlength(c);
+						result.add(newObj);
+					}
 					c++;	
 				} else {
 					JPEGCategory newObj = new JPEGCategory(arr[i],0, 0);
@@ -92,9 +97,6 @@ public class HuffmanEncoder {
 				c = 0;
 			}
 		}
-		JPEGCategory finalObj = new JPEGCategory(0,0, 0);
-		finalObj.setRunlength(c-1);//decrement by 1 of counter because for loop goes one step further.
-		result.add(finalObj);
 		
 		JPEGCategory EOB = new JPEGCategory(0,0, 0);
 		EOB.setRunlength(0);

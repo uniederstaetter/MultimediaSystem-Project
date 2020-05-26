@@ -5,6 +5,7 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -21,6 +22,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+
+import decompression.BlockOrganisor;
+import decompression.ReverseDPCM;
 
 public class GUI extends JFrame {
 
@@ -108,27 +112,48 @@ public class GUI extends JFrame {
 				
 				List<Mat> quantised = Quantization.quantise(dct_converted);
 				
+//				for(Mat m: quantised) {
+//					System.out.println(m.dump());
+//				}
+//				
 				List<double []>zigZag=ZigZag.zigZag(quantised);
 				
+//				for(double [] m: zigZag) {
+//					System.out.println(m.length);
+//			}
+//				
+				List<String>encodedList=new ArrayList<>();
+				double rng  = DPCM.getRange(zigZag);
+				double offSet=DPCM.getOffSet();
+				
+				
 				for (double[] zig : zigZag) {
-					
-					double rng  = DPCM.getRange(zigZag);
 					double lvl = DPCM.quantiseError(zig[0], rng);
+				
 					String DCElement=DPCM.encode(lvl);
 					//System.out.println(DPCM.encode(lvl) + "<<< DC element");
+				
+		
 					List<JPEGCategory> rle = HuffmanEncoder.RLE(zig);
-					System.out.println(DCElement);
+					encodedList.add(DCElement);
 					for (JPEGCategory r : rle) {
-						System.out.println(r.huffmanEncode());
+						encodedList.add(r.huffmanEncode());
+						//System.out.println(r.huffmanEncode());
 					}
 					
 				}
-//				List<JPEGCategory>rle=HuffmanEncoder.RLE(zigZag.get(2));
-//				for(JPEGCategory r: rle) {
-//					System.out.println(r.huffmanEncode("Test"));
-//				}
 				
-				 
+				List<String []> encodedBlocks=BlockOrganisor.createBlocks(encodedList);
+				
+				for(String[] encoded: encodedBlocks) {
+					if(encoded[0]!="") {//TODO: last element appears to be empty---WHY?
+						System.out.println(ReverseDPCM.reverseDPCM(encoded[0], rng, offSet));
+						
+					}
+					
+				}
+				
+				
 		});
 
 		// Display the window.

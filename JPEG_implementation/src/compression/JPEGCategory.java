@@ -82,7 +82,9 @@ public class JPEGCategory {
 			return "1010";
 		}
 		int position=(int)this.prec;
+		//System.out.println(this.runlength);
 		String huffmanString=HuffmannTable.huffmanJPG[index]+Utils.convertIntToBinary(position, this.cat);
+		
 		return huffmanString;
 	}
 	

@@ -8,7 +8,10 @@ public class DPCM {
 	private static double levels = 256;
 	private static double normRange = 2;
 	private static double normDelta = normRange/levels;
-	
+	private static double offSet;
+	public static double getNormDelta() {
+		return normDelta;
+	}
 	//getter and setter
 	public static double getPredict() {
 		return prediction;
@@ -21,9 +24,19 @@ public class DPCM {
 	public static double getRange(List<double []> arr) {
 		double minError=minMat(arr);
 		double maxError=maxMat(arr);
+		offSet=minError;
 		return (maxError - minError);
 	}
 	
+	public static double getOffSet() {
+		return offSet;
+	}
+	public static double getPrediction() {
+		return prediction;
+	}
+	public static double getLevels() {
+		return levels;
+	}
 	// computes the errors, normalizes them in the [0, 2] range, then quantizes them and returns the correspondent level (using a nonlinear approach)
 	public static double quantiseError(double coeff, double range) {
 		//get the actual value of my error
@@ -53,6 +66,9 @@ public class DPCM {
 		
 	}
 	
+	public static double getNormRange() {
+		return normRange;
+	}
 	// Servant methods to compute the min/max DC value among all blocks
 	public static double minMat(List<double []> arr) {
 		double min = Double.MAX_VALUE;
