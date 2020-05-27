@@ -2,6 +2,7 @@ package compression;
 import java.util.ArrayList;
 
 public class HuffmanEncoder {
+	
 	public static JPEGCategory assignCategory(double coeff) {
 		Double doubleObj = new Double(coeff);
 		int myCoeff = Math.abs(doubleObj.intValue());
@@ -102,6 +103,13 @@ public class HuffmanEncoder {
 		EOB.setRunlength(0);
 		result.add(EOB);
 		return result;
+	}
+	
+	public static JPEGCategory RLEDC(double DCElement) {
+		
+		JPEGCategory dcCat=assignCategory(DCElement);
+
+		return dcCat;
 	}
 	
 	

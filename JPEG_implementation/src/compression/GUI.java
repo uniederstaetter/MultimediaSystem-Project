@@ -24,6 +24,7 @@ import org.opencv.core.Core;
 import org.opencv.core.Mat;
 
 import decompression.BlockOrganisor;
+import decompression.HuffmanDecoder;
 import decompression.ReverseDPCM;
 
 public class GUI extends JFrame {
@@ -123,33 +124,47 @@ public class GUI extends JFrame {
 //			}
 //				
 				List<String>encodedList=new ArrayList<>();
-				double rng  = DPCM.getRange(zigZag);
-				double offSet=DPCM.getOffSet();
+//				double rng  = DPCM.getRange(zigZag);
+//				double offSet=DPCM.getOffSet();
 				
 				
 				for (double[] zig : zigZag) {
-					double lvl = DPCM.quantiseError(zig[0], rng);
-				
-					String DCElement=DPCM.encode(lvl);
-					//System.out.println(DPCM.encode(lvl) + "<<< DC element");
-				
+					//System.out.println("DC Element before: "+zig[0]);
+//					double lvl = DPCM.quantiseError(zig[0], rng);
+//				
+//					String DCElement=DPCM.encode(lvl);
+//					//System.out.println(DPCM.encode(lvl) + "<<< DC element");
+					//System.out.println("Dc Element is: "+zig[0]);
+					JPEGCategory catDC=HuffmanEncoder.RLEDC(zig[0]);
+					String encodedDC=catDC.huffmanEncodeDC();
+
+					encodedList.add(encodedDC);
 		
 					List<JPEGCategory> rle = HuffmanEncoder.RLE(zig);
-					encodedList.add(DCElement);
+					
 					for (JPEGCategory r : rle) {
 						encodedList.add(r.huffmanEncode());
 						//System.out.println(r.huffmanEncode());
 					}
 					
 				}
-				
+			
 				List<String []> encodedBlocks=BlockOrganisor.createBlocks(encodedList);
 				
+//				for (String  [] e: encodedBlocks) {
+//					for(String s: e) {
+//						System.out.println(s);
+//					}
+//					System.out.println("___________");
+//				}
+//				
 				for(String[] encoded: encodedBlocks) {
-					if(encoded[0]!="") {//TODO: last element appears to be empty---WHY?
-						System.out.println(ReverseDPCM.reverseDPCM(encoded[0], rng, offSet));
-						
-					}
+					//System.out.println("After: "+encoded[0]);
+					//HuffmanDecoder.decodeDC(encoded[0]);
+//					if(encoded[0]!="") {//TODO: last element appears to be empty---WHY?
+//						ReverseDPCM.reverseDPCM(encoded[0], rng, offSet);
+//						
+//					}
 					
 				}
 				

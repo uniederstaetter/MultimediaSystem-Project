@@ -31,9 +31,7 @@ public class DPCM {
 	public static double getOffSet() {
 		return offSet;
 	}
-	public static double getPrediction() {
-		return prediction;
-	}
+
 	public static double getLevels() {
 		return levels;
 	}
@@ -46,6 +44,7 @@ public class DPCM {
 //		System.out.println("My range = " + range);
 		//predictor is updated
 		setPredict(coeff);
+		System.out.println("usual pred is: "+getPredict());
 		//error is normalized, but on the [0,2] range, for convenience
 		double normalizedError = (normRange*error)/range;
 		//System.out.println("Normalized Error = " + normalizedError);

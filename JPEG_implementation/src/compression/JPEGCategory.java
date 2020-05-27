@@ -88,4 +88,11 @@ public class JPEGCategory {
 		return huffmanString;
 	}
 	
+	public String huffmanEncodeDC() {
+		int position=(int)this.prec;
+		String huffmanString=HuffmannTable.huffmannDC[this.cat]+Utils.convertIntToBinary(position, this.cat);
+		
+		return huffmanString;
+	}
+	
 }
