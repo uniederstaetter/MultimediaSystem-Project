@@ -1,12 +1,29 @@
 package decompression;
 
+import compression.JPEGCategory;
+
 public class HuffmanDecoder {
 	
-
-	public static void decodeDC(String DCbinary) {
+	public static int assignCoefficant(int cat, int prec) {
+		int start = (int) (Math.pow(2, cat)-1)*(-1);
+		int skip = cat == 1 ? 0 :(int) (Math.pow(2, cat-1)-1)*(-1);
 		
+		int [] values=getValues(start, skip, cat);
 		
-		int binToDec=Integer.parseInt(DCbinary, 2);
-		System.out.println("DC ELement after: "+binToDec);
+		return values[prec];
+	}
+	
+	public static int [] getValues(int start, int skip, int cat) {
+		int end=Math.abs(start);
+		int skipEnd=Math.abs(skip);
+		int [] numbers= new int [(int) Math.pow(2, cat)];
+		int j=0;
+		for (int i=start; i<=end; i++) {
+			if(i<skip||i>skipEnd) {
+				numbers[j]=i;
+				j++;
+			}
+		}
+		return numbers;
 	}
 }

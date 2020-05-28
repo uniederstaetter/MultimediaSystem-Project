@@ -2,10 +2,12 @@ package compression;
 import java.util.ArrayList;
 
 public class HuffmanEncoder {
+	private static double DCprev=0;
 	
 	public static JPEGCategory assignCategory(double coeff) {
 		Double doubleObj = new Double(coeff);
 		int myCoeff = Math.abs(doubleObj.intValue());
+		
 		if (myCoeff <=1) { // -1, 1
 			double position = getPosition(coeff, 1);
 			return new JPEGCategory(coeff,1, position);
@@ -83,6 +85,7 @@ public class HuffmanEncoder {
 						JPEGCategory newObj = new JPEGCategory(arr[i],0, 0);
 						newObj.setRunlength(c);
 						result.add(newObj);
+						//TODO: add codes to huffmann table
 					}
 					c++;	
 				} else {
@@ -107,7 +110,9 @@ public class HuffmanEncoder {
 	
 	public static JPEGCategory RLEDC(double DCElement) {
 		
-		JPEGCategory dcCat=assignCategory(DCElement);
+		double DCdiff=DCElement-DCprev;
+		JPEGCategory dcCat=assignCategory(DCdiff);
+		DCprev=DCElement;
 
 		return dcCat;
 	}

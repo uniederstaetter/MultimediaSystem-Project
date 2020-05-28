@@ -1,5 +1,6 @@
 package compression;
 
+import decompression.HuffmanDecoder;
 import utils.Utils;
 
 public class JPEGCategory {
@@ -8,12 +9,16 @@ public class JPEGCategory {
 	private int cat;		// The category of the coefficient.
 	private double prec;	// The precision of the coefficient.
 	private int runlength;	// The RLE of the coefficient.
+	private static int prev=0;
 	
 	/** Constructor. */
 	public JPEGCategory(double coeff, int cat, double prec) {
 		this.setCoeff(coeff);
 		this.setCat(cat);
 		this.setPrec(prec);
+	}
+	public JPEGCategory() {
+		
 	}
 	
 	public double getCoeff() {
@@ -94,5 +99,68 @@ public class JPEGCategory {
 		
 		return huffmanString;
 	}
+	
+	public void huffmanDecodeDC(String huffmanString) {
+		
+		for(int i=HuffmannTable.huffmannDC.length-1; i>=0; i--) {
+			int digits=HuffmannTable.huffmannDC[i].length();
+			if(digits<huffmanString.length()) {
+				String sub=huffmanString.substring(0, digits);
+				if(sub.equals(HuffmannTable.huffmannDC[i])) {
+					this.cat=i;
+					String postSub=huffmanString.substring(digits);
+					int toDec=Integer.parseInt(postSub, 2);
+					this.prec=toDec;
+				}
+				
+			}
+			
+		}
+		this.coeff=HuffmanDecoder.assignCoefficant(this.cat, (int)this.prec)+prev;
+		System.out.println(prev);
+		prev=(int)this.coeff;
+	}
+	
+	public void huffmanDecodeAC(String huffmanString) {
+		
+		String special=HuffmannTable.huffmanJPG[150];
+		String special2=HuffmannTable.huffmanJPG[140];
+		//System.out.println(special2);
+				
+		if(huffmanString.startsWith(special)) {
+			this.runlength=15;
+			this.prec=0;
+			this.cat=0;
+			this.coeff=0;
+			return;
+		}
+		if(huffmanString.startsWith(special2)) {
+			this.runlength=14;
+			this.prec=0;
+			this.cat=0;
+			this.coeff=0;
+			return;
+		}
+		
+		
+		for(int i=HuffmannTable.huffmanJPG.length-1; i>=0; i--) {
+			int digits=HuffmannTable.huffmanJPG[i].length();
+			if(digits<huffmanString.length()) {
+				String sub=huffmanString.substring(0, digits);
+				if(sub.equals(HuffmannTable.huffmanJPG[i])) {
+					int index=i;
+					String postSub=huffmanString.substring(digits);
+					this.cat=postSub.length();
+					this.prec=Integer.parseInt(postSub,2);
+					this.runlength=(index/10)-this.cat;
+					System.out.println("index is: "+index);
+				}
+			}
+		}
+		
+		this.coeff=HuffmanDecoder.assignCoefficant(this.cat, (int)this.prec);
+	}
+	
+	
 	
 }

@@ -77,12 +77,11 @@ public class GUI extends JFrame {
 
 		// Adds the default image to the frame.
 		displayDefault();
-		
 
 		// adding a button for executing the compression
 		JButton doCompression = new JButton("Compress Image");
 		this.getContentPane().add(doCompression, BorderLayout.SOUTH);
-		
+
 		// add here code for executing algorithm
 
 		// Set up the content pane.
@@ -106,51 +105,67 @@ public class GUI extends JFrame {
 				addImage(selectedImg); // Add the new image
 			}
 		});
-		
+
 		doCompression.addActionListener(event -> {
-				
-				List<Mat> dct_converted = ForwardDCT.divideBlocksDCT(defaultImgPath);
-				
-				List<Mat> quantised = Quantization.quantise(dct_converted);
-				
+
+			List<Mat> dct_converted = ForwardDCT.divideBlocksDCT(defaultImgPath);
+
+			List<Mat> quantised = Quantization.quantise(dct_converted);
+
 //				for(Mat m: quantised) {
 //					System.out.println(m.dump());
 //				}
 //				
-				List<double []>zigZag=ZigZag.zigZag(quantised);
-				
+			List<double[]> zigZag = ZigZag.zigZag(quantised);
+
 //				for(double [] m: zigZag) {
 //					System.out.println(m.length);
 //			}
 //				
-				List<String>encodedList=new ArrayList<>();
+			List<String> encodedList = new ArrayList<>();
 //				double rng  = DPCM.getRange(zigZag);
 //				double offSet=DPCM.getOffSet();
-				
-				
-				for (double[] zig : zigZag) {
-					//System.out.println("DC Element before: "+zig[0]);
+			
+	
+			int k = 0;
+
+			for (double[] zig : zigZag) {
+				// System.out.println("DC Element before: "+zig[0]);
 //					double lvl = DPCM.quantiseError(zig[0], rng);
 //				
 //					String DCElement=DPCM.encode(lvl);
 //					//System.out.println(DPCM.encode(lvl) + "<<< DC element");
-					//System.out.println("Dc Element is: "+zig[0]);
-					JPEGCategory catDC=HuffmanEncoder.RLEDC(zig[0]);
-					String encodedDC=catDC.huffmanEncodeDC();
+				// System.out.println("Dc Element is: "+zig[0]);
 
-					encodedList.add(encodedDC);
-		
-					List<JPEGCategory> rle = HuffmanEncoder.RLE(zig);
-					
-					for (JPEGCategory r : rle) {
-						encodedList.add(r.huffmanEncode());
-						//System.out.println(r.huffmanEncode());
-					}
-					
+				JPEGCategory catDC = HuffmanEncoder.RLEDC(zig[0]);
+				if(k==0) {
+					System.out.println("cat: " + catDC.getCat() + "prec: " + catDC.getPrec() + " coeff: "
+							+ catDC.getCoeff());
 				}
-			
-				List<String []> encodedBlocks=BlockOrganisor.createBlocks(encodedList);
 				
+				String encodedDC = catDC.huffmanEncodeDC();
+
+				encodedList.add(encodedDC);
+				// System.out.println(encodedDC);
+				List<JPEGCategory> rle = HuffmanEncoder.RLE(zig);
+		
+				for (JPEGCategory r : rle) {
+					if (k == 0) {
+						System.out.println("cat: " + r.getCat() + "prec: " + r.getPrec() + " coeff: "
+								+ r.getCoeff()+" run: "+r.getRunlength());
+						
+					}
+					encodedList.add(r.huffmanEncode());
+				}
+				k++;
+				
+
+			}
+			System.out.println("_____________");
+		
+
+			List<String[]> encodedBlocks = BlockOrganisor.createBlocks(encodedList);
+
 //				for (String  [] e: encodedBlocks) {
 //					for(String s: e) {
 //						System.out.println(s);
@@ -158,27 +173,51 @@ public class GUI extends JFrame {
 //					System.out.println("___________");
 //				}
 //				
-				for(String[] encoded: encodedBlocks) {
-					//System.out.println("After: "+encoded[0]);
-					//HuffmanDecoder.decodeDC(encoded[0]);
-//					if(encoded[0]!="") {//TODO: last element appears to be empty---WHY?
-//						ReverseDPCM.reverseDPCM(encoded[0], rng, offSet);
+			int j=0;
+			
+			JPEGCategory DCElement = new JPEGCategory();
+			DCElement.huffmanDecodeDC(encodedBlocks.get(0)[0]);
+			System.out.println("cat: " + DCElement.getCat() + "prec: " + DCElement.getPrec() + " coeff: "
+					+ DCElement.getCoeff());
+			for(int i=1; i <encodedBlocks.get(0).length; i++) {
+				JPEGCategory ACElement = new JPEGCategory();
+				ACElement.huffmanDecodeAC(encodedBlocks.get(0)[i]);
+				
+				System.out.println("cat: " + ACElement.getCat() + "prec: " + ACElement.getPrec() + " coeff: "
+						+ ACElement.getCoeff()+" run: "+ACElement.getRunlength());
+			}
+	
+//			for (String[] encoded : encodedBlocks) {
+//				
+//				JPEGCategory DCElement = new JPEGCategory();
+//				DCElement.huffmanDecodeDC(encoded[0]);
+//				System.out.println("cat: " + DCElement.getCat() + "prec: " + DCElement.getPrec() + " coeff: "
+//						+ DCElement.getCoeff());
+//				
+//				for (int i = 1; i < encoded.length; i++) {
+//					
+//						JPEGCategory ACElement = new JPEGCategory();
+//						ACElement.huffmanDecodeAC(encoded[i]);
 //						
-//					}
-					
-				}
-				
-				
+//						System.out.println("cat: " + ACElement.getCat() + "prec: " + ACElement.getPrec() + " coeff: "
+//								+ ACElement.getCoeff());
+//					
+//					
+//				}
+//
+//
+//			}
+
 		});
 
 		// Display the window.
-		this.pack(); 			// Adjust it self automatically to the contents inside the frame. What?
+		this.pack(); // Adjust it self automatically to the contents inside the frame. What?
 		// Sets the dimension and the position of the window. (Window should open in the
 		// middle of the screen.)
 		int width = this.getWidth();
 		int height = this.getHeight();
 		this.setBounds(widthscreen / 2 - width / 2, heightscreen / 2 - height / 2, width, height);
-		this.setVisible(true);	// Make the window visible.
+		this.setVisible(true); // Make the window visible.
 
 	}
 
@@ -197,6 +236,7 @@ public class GUI extends JFrame {
 
 	/**
 	 * Adds a image to the content pane.
+	 * 
 	 * @param img The image to be added.
 	 */
 	private void addImage(Image img) {
@@ -211,9 +251,8 @@ public class GUI extends JFrame {
 	}
 
 	/**
-	 * A file chooser will be created and displayed.
-	 * The file chooser allows the user to select a new image  file.
-	 * Only image files are supported.
+	 * A file chooser will be created and displayed. The file chooser allows the
+	 * user to select a new image file. Only image files are supported.
 	 *
 	 * @return The path of the image or null if the user does not choose an image.
 	 */
@@ -223,14 +262,14 @@ public class GUI extends JFrame {
 		File file = null;
 
 		// Allows only images to be read.
-		FileNameExtensionFilter imageFilter = new FileNameExtensionFilter("Image files", ImageIO.getReaderFileSuffixes());
+		FileNameExtensionFilter imageFilter = new FileNameExtensionFilter("Image files",
+				ImageIO.getReaderFileSuffixes());
 
 		// Attaching Filter to JFileChooser object
 		fileChooser.setFileFilter(imageFilter);
 
 		int action = fileChooser.showSaveDialog(null);
 
-		
 		if (action == JFileChooser.APPROVE_OPTION) {
 			file = fileChooser.getSelectedFile();
 			filepath = fileChooser.getSelectedFile().getAbsolutePath();
