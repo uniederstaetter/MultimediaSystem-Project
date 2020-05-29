@@ -88,9 +88,10 @@ public class JPEGCategory {
 		}
 		int position=(int)this.prec;
 		//System.out.println(this.runlength);
-		String huffmanString=HuffmannTable.huffmanJPG[index]+Utils.convertIntToBinary(position, this.cat);
+		if(this.cat > 0)
+			return HuffmannTable.huffmanJPG[index]+Utils.convertIntToBinary(position, this.cat);
 		
-		return huffmanString;
+		return HuffmannTable.huffmanJPG[index];
 	}
 	
 	public String huffmanEncodeDC() {
@@ -116,16 +117,16 @@ public class JPEGCategory {
 			}
 			
 		}
-		this.coeff=HuffmanDecoder.assignCoefficant(this.cat, (int)this.prec)+prev;
-		System.out.println(prev);
-		prev=(int)this.coeff;
+		this.coeff=HuffmanDecoder.assignCoefficant(this.cat, (int)this.prec)/*+prev*/;
+		//System.out.println(prev);
+		//prev=(int)this.coeff;
 	}
 	
 	public void huffmanDecodeAC(String huffmanString) {
 		
+		//System.out.println(huffmanString);
+		
 		String special=HuffmannTable.huffmanJPG[150];
-		String special2=HuffmannTable.huffmanJPG[140];
-		//System.out.println(special2);
 				
 		if(huffmanString.startsWith(special)) {
 			this.runlength=15;
@@ -134,26 +135,17 @@ public class JPEGCategory {
 			this.coeff=0;
 			return;
 		}
-		if(huffmanString.startsWith(special2)) {
-			this.runlength=14;
-			this.prec=0;
-			this.cat=0;
-			this.coeff=0;
-			return;
-		}
-		
 		
 		for(int i=HuffmannTable.huffmanJPG.length-1; i>=0; i--) {
 			int digits=HuffmannTable.huffmanJPG[i].length();
-			if(digits<huffmanString.length()) {
+			if(digits<=huffmanString.length()) {
 				String sub=huffmanString.substring(0, digits);
 				if(sub.equals(HuffmannTable.huffmanJPG[i])) {
-					int index=i;
 					String postSub=huffmanString.substring(digits);
-					this.cat=postSub.length();
-					this.prec=Integer.parseInt(postSub,2);
-					this.runlength=(index/10)-this.cat;
-					System.out.println("index is: "+index);
+					this.cat= sub.length() == huffmanString.length() ? 0 : postSub.length();
+					this.prec= sub.length() == huffmanString.length() ? 0 : Integer.parseInt(postSub,2);
+					this.runlength= i < 10 ? 0 : (i/10)-this.cat;
+//					System.out.println("index is: "+i);
 				}
 			}
 		}

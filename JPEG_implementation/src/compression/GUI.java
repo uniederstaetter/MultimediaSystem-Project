@@ -25,6 +25,7 @@ import org.opencv.core.Mat;
 
 import decompression.BlockOrganisor;
 import decompression.HuffmanDecoder;
+import decompression.InverseZigZag;
 import decompression.ReverseDPCM;
 
 public class GUI extends JFrame {
@@ -127,7 +128,7 @@ public class GUI extends JFrame {
 //				double offSet=DPCM.getOffSet();
 			
 	
-			int k = 0;
+
 
 			for (double[] zig : zigZag) {
 				// System.out.println("DC Element before: "+zig[0]);
@@ -138,10 +139,9 @@ public class GUI extends JFrame {
 				// System.out.println("Dc Element is: "+zig[0]);
 
 				JPEGCategory catDC = HuffmanEncoder.RLEDC(zig[0]);
-				if(k==0) {
-					System.out.println("cat: " + catDC.getCat() + "prec: " + catDC.getPrec() + " coeff: "
-							+ catDC.getCoeff());
-				}
+//				System.out.println("cat: " + catDC.getCat() + "prec: " + catDC.getPrec() + " coeff: "
+//							+ catDC.getCoeff());
+				
 				
 				String encodedDC = catDC.huffmanEncodeDC();
 
@@ -150,63 +150,35 @@ public class GUI extends JFrame {
 				List<JPEGCategory> rle = HuffmanEncoder.RLE(zig);
 		
 				for (JPEGCategory r : rle) {
-					if (k == 0) {
-						System.out.println("cat: " + r.getCat() + "prec: " + r.getPrec() + " coeff: "
-								+ r.getCoeff()+" run: "+r.getRunlength());
-						
-					}
+//					System.out.println("cat: " + r.getCat() + "prec: " + r.getPrec() + " coeff: "
+//								+ r.getCoeff()+" run: "+r.getRunlength());
 					encodedList.add(r.huffmanEncode());
 				}
-				k++;
-				
-
 			}
-			System.out.println("_____________");
-		
+			//System.out.println("_____________");
 
 			List<String[]> encodedBlocks = BlockOrganisor.createBlocks(encodedList);
-
-//				for (String  [] e: encodedBlocks) {
-//					for(String s: e) {
-//						System.out.println(s);
-//					}
-//					System.out.println("___________");
-//				}
-//				
-			int j=0;
-			
-			JPEGCategory DCElement = new JPEGCategory();
-			DCElement.huffmanDecodeDC(encodedBlocks.get(0)[0]);
-			System.out.println("cat: " + DCElement.getCat() + "prec: " + DCElement.getPrec() + " coeff: "
-					+ DCElement.getCoeff());
-			for(int i=1; i <encodedBlocks.get(0).length; i++) {
-				JPEGCategory ACElement = new JPEGCategory();
-				ACElement.huffmanDecodeAC(encodedBlocks.get(0)[i]);
-				
-				System.out.println("cat: " + ACElement.getCat() + "prec: " + ACElement.getPrec() + " coeff: "
-						+ ACElement.getCoeff()+" run: "+ACElement.getRunlength());
-			}
-	
-//			for (String[] encoded : encodedBlocks) {
-//				
-//				JPEGCategory DCElement = new JPEGCategory();
-//				DCElement.huffmanDecodeDC(encoded[0]);
+			System.out.println(zigZag.size());
+			List<JPEGCategory[]> decodedBlocks = new ArrayList<>(); 
+		
+			for (int j = 0; j < encodedBlocks.size(); j++) {
+				JPEGCategory[] block = new JPEGCategory[encodedBlocks.get(j).length];
+				JPEGCategory DCElement = new JPEGCategory();
+				DCElement.huffmanDecodeDC(encodedBlocks.get(j)[0]);
+				block[0] = DCElement;
 //				System.out.println("cat: " + DCElement.getCat() + "prec: " + DCElement.getPrec() + " coeff: "
 //						+ DCElement.getCoeff());
-//				
-//				for (int i = 1; i < encoded.length; i++) {
-//					
-//						JPEGCategory ACElement = new JPEGCategory();
-//						ACElement.huffmanDecodeAC(encoded[i]);
-//						
-//						System.out.println("cat: " + ACElement.getCat() + "prec: " + ACElement.getPrec() + " coeff: "
-//								+ ACElement.getCoeff());
-//					
-//					
-//				}
-//
-//
-//			}
+				for(int i=1; i <encodedBlocks.get(j).length; i++) {
+					JPEGCategory ACElement = new JPEGCategory();
+					ACElement.huffmanDecodeAC(encodedBlocks.get(j)[i]);
+					block[i] = ACElement;
+//					System.out.println("cat: " + ACElement.getCat() + "prec: " + ACElement.getPrec() + " coeff: "
+//							+ ACElement.getCoeff()+" run: "+ACElement.getRunlength());
+				}
+			decodedBlocks.add(block);
+			}
+			for (int i = 0; i < decodedBlocks.size(); i++)
+				System.out.println(InverseZigZag.invert(decodedBlocks.get(i)).dump());
 
 		});
 
