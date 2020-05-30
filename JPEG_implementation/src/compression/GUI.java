@@ -192,66 +192,35 @@ public class GUI extends JFrame {
 			
 			Mat newMat = new Mat(ForwardDCT.getMatRows(), ForwardDCT.getMatCols(), CvType.CV_64FC1);
 			
-			Mat[] allMats = new Mat[inverseDCT.size()];
-			allMats = inverseDCT.toArray(allMats);
-			double[] values = new double[ForwardDCT.getMatRows()* ForwardDCT.getMatCols()];
-			
-			List<Mat[]> chenesoio = new ArrayList<>(); 
-			for (int i = 0; i < allMats.length; i += ForwardDCT.getMatCols()/8) {
-				Mat[] mats = new Mat[ForwardDCT.getMatCols()/8];
-				for (int j = 0; j < mats.length; j++) {
-					mats[j] = allMats[i];
-				}
-				chenesoio.add(mats);
-			}
-			
-			int k =0;
+			/* This part works for 8 random rows of the image
 			int row = 0;
-			for (int i = 0; i < chenesoio.size(); i++) {
-				for (int j = 0; j < chenesoio.get(i).length; j++) {
-					for (int l = 0; l < chenesoio.get(i)[j].cols(); l++) {
-						values[k] = chenesoio.get(i)[j].get(row,l)[0];
-						k++;
-					}
+			int col = 0;
+			System.out.println("Size: " + inverseDCT.size());
+			for (int i = 0; i < inverseDCT.size(); i++) {
+				Mat m = inverseDCT.get(i);
+				for (int j = 0; j < m.cols(); j++) { // Forse meglio rows
+					row++;
 				}
-				row++;
+				row = 0;
+				col +=8;
+			}
+			*/
+			System.out.println("------>" + ForwardDCT.getMatCols());
+			// Continue here!!
+			int k = 0;
+			for (int row = 0; row < ForwardDCT.getMatRows(); row += 8) {
+				for (int col = 0; col < ForwardDCT.getMatCols(); col += 8) {
+					Mat m = inverseDCT.get(k);
+					for (int i = 0; i < 8; i++) {
+						newMat.put(row+i, col, matToArr(m.row(i)));
+					}
+					k++;
+				}
 			}
 			
-			System.out.println("values " + values.length);
-			
-			
-			System.out.println("ImageRows " + ForwardDCT.getMatRows());
-			System.out.println("ImageCols " + ForwardDCT.getMatCols());
-			System.out.println("Chenesoio " + chenesoio.size());
-//			int k = 0;
-//			for (int i = 0; i < allMats.length; i++) {
-//				for (int j = 0; j < allMats[i].rows(); j++) { 
-//					for (int l = 0; l < allMats[i].cols(); l++) {
-//						values[k] = allMats[i].get(j, l)[0];
-//						k++;
-//					}
-//				}
-//			}
-//			newMat.put(0, 0, values);
-//			for (int i = 0; i < inverseDCT.size(); i += ForwardDCT.getMatRows()) {
-//				for (int j = 0; j < ForwardDCT.getMatCols(); j++) {
-//					double[] data = matToArr(inverseDCT.get(k)); 
-//					newMat.put(i,j, data);
-//					k++;
-//				}
-//			}
-			
-//			System.out.println("Rows " + newMat.rows() + " Cols: " + newMat.cols());
-			
-//			Mat finalIMG = new Mat();
-//			newMat.convertTo(finalIMG, CvType.CV_8UC1);
-//			
-//			for (int i = 0; i < 10; i++) {
-//				for (int j= 0; j < finalIMG.row(i).cols(); j++) {
-//					System.out.println(finalIMG.get(i,j)[0]);
-//				}
-//			}
-//			Imgcodecs.imwrite("lenaNew.png", finalIMG);
+			Mat finalIMG = new Mat();
+			newMat.convertTo(finalIMG, CvType.CV_8UC1);
+			Imgcodecs.imwrite("lenaNew.png", finalIMG);
 		});
 
 		// Display the window.

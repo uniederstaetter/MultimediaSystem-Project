@@ -12,7 +12,7 @@ public class InverseQuantization {
 			57, 69, 56, 14, 17, 22, 29, 51, 87, 80, 62, 18, 22, 37, 56, 68, 109, 103, 77, 24, 35, 55, 64, 81, 104, 113,
 			92, 49, 64, 78, 87, 103, 121, 120, 101, 72, 92, 95, 98, 112, 100, 103, 99 };
 
-	static double qualityFactor = 90;
+	static double qualityFactor = 100;
 	static Mat quantisMat = fillMat();
 
 	public static Mat fillMat() {
