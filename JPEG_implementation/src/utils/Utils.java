@@ -14,6 +14,29 @@ public class Utils {
 	 * @param digits The number of digits of the result.
 	 * @return The converted value to binary as a String.
 	 */
+	
+	private static double encodedPred = 0;
+	private static double decodedPred = 0;
+	
+	
+	public static double getEncodedPred() {
+		return encodedPred;
+	}
+
+	public static void setEncodedPred(double encodedPred) {
+		Utils.encodedPred = encodedPred;
+		//System.out.println(encodedPred);
+	}
+
+	public static double getDecodedPred() {
+		return decodedPred;
+	}
+
+	public static void setDecodedPred(double decodedPred) {
+		Utils.decodedPred = decodedPred;
+		System.out.println(decodedPred);
+	}
+
 	public static String convertIntToBinary(int value, int digits) {
 		String ret = Integer.toBinaryString(value);
 		

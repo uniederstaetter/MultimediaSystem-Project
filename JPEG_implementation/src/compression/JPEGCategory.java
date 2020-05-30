@@ -128,7 +128,10 @@ public class JPEGCategory {
 		}
 		//this.coeff=HuffmanDecoder.assignCoefficant(this.cat, (int)this.prec);//DC Element
 		
-		this.coeff=HuffmanDecoder.assignCoefficant(this.cat, (int)this.prec)+prev;
+		int error = HuffmanDecoder.assignCoefficient(this.cat, this.prec);
+		this.coeff = error + Utils.getDecodedPred();
+		//System.out.println("cat: " + this.cat + " prec: " + this.prec + " err: " + error + " coeff: " + this.coeff);
+		Utils.setDecodedPred(this.coeff);
 		
 		//this.coeff = this.coeff + HuffmanDecoder.getDCprev();
 		
@@ -176,9 +179,7 @@ public class JPEGCategory {
 			}
 		}
 		
-		this.coeff=HuffmanDecoder.assignCoefficant(this.cat, (int)this.prec);
-		if (this.runlength < 0)
-		System.out.println("COEF " + this.getCoeff());
+		this.coeff=HuffmanDecoder.assignCoefficient(this.cat, this.prec);
 	}
 	
 	

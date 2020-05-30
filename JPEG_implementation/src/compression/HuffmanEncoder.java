@@ -1,12 +1,18 @@
 package compression;
 import java.util.ArrayList;
 
+import utils.Utils;
+
 public class HuffmanEncoder {
 	private static double DCprev=0;
 	
 	public static JPEGCategory assignCategory(double coeff) {
 		Double doubleObj = new Double(coeff);
 		int myCoeff = Math.abs(doubleObj.intValue());
+		
+		if (myCoeff == 0) {
+			return new JPEGCategory(coeff, 0, 0.0);
+		}
 		
 		if (myCoeff <=1) { // -1, 1
 			double position = getPosition(coeff, 1);
@@ -117,10 +123,10 @@ public class HuffmanEncoder {
 	
 	public static JPEGCategory RLEDC(double DCElement) {
 		
-		double DCdiff=DCElement-DCprev;
+		double DCdiff=DCElement-Utils.getEncodedPred();
 		JPEGCategory dcCat=assignCategory(DCdiff);
-		//DCprev=DCElement;
-		//System.out.println("DCPrev in encoding: " + DCprev);
+		Utils.setEncodedPred(DCElement);
+		//System.out.println("Coeff " + DCElement + "Error with prevision " + DCdiff);
 
 		return dcCat;
 	}

@@ -14,13 +14,14 @@ public class HuffmanDecoder {
 		DCprev = dCprev;
 	}
 
-	public static int assignCoefficant(int cat, int prec) {
+	public static int assignCoefficient(int cat, double prec) {
+		int newPrec = (int) prec;
 		int start = (int) (Math.pow(2, cat)-1)*(-1);
 		int skip = cat == 1 ? 0 :(int) (Math.pow(2, cat-1)-1)*(-1);
 		
 		int [] values=getValues(start, skip, cat);
 		
-		return values[prec];
+		return values[newPrec];
 	}
 	
 	public static int [] getValues(int start, int skip, int cat) {
@@ -34,6 +35,8 @@ public class HuffmanDecoder {
 				j++;
 			}
 		}
+		//System.out.println("Array " + numbers.length);
 		return numbers;
+		
 	}
 }
