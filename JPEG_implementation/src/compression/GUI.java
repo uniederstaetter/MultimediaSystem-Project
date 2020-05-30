@@ -25,7 +25,7 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 
-import com.sun.tools.sjavac.server.SysInfo;
+//import com.sun.tools.sjavac.server.SysInfo;
 
 import decompression.BlockOrganisor;
 import decompression.InverseDCT;
@@ -57,7 +57,7 @@ public class GUI extends JFrame {
 
 	private Image img; // Image the user chooses to be compressed.
 	private String filepath; // File the user opens
-	private final static String defaultImgPath = "barbara.tif"; // The path of the default image.
+	private final static String defaultImgPath = "lena_grey.png"; // The path of the default image.
 	Image selectedImg;
 
 	public GUI() {
@@ -114,7 +114,7 @@ public class GUI extends JFrame {
 		doCompression.addActionListener(event -> {
 
 			List<Mat> dct_converted = ForwardDCT.divideBlocksDCT(filepath != null ? filepath : defaultImgPath);
-
+			
 			List<Mat> quantised = Quantization.quantise(dct_converted);
 
 //				for(Mat m: quantised) {
@@ -131,8 +131,6 @@ public class GUI extends JFrame {
 //				double rng  = DPCM.getRange(zigZag);
 //				double offSet=DPCM.getOffSet();
 	
-
-			int countZigs = 0;
 			for (double[] zig : zigZag) {
 				// System.out.println("DC Element before: "+zig[0]);
 //					double lvl = DPCM.quantiseError(zig[0], rng);
@@ -153,7 +151,6 @@ public class GUI extends JFrame {
 				List<JPEGCategory> rle = HuffmanEncoder.RLE(zig);
 		
 				for (JPEGCategory r : rle) {
-					countZigs++;
 //					System.out.println("cat: " + r.getCat() + "prec: " + r.getPrec() + " coeff: "
 //								+ r.getCoeff()+" run: "+r.getRunlength());
 					encodedList.add(r.huffmanEncode());
@@ -186,6 +183,7 @@ public class GUI extends JFrame {
 				inversZig.add(InverseZigZag.invert(decodedBlocks.get(i)));
 			}
 			List<Mat> dequantized = InverseQuantization.inverseQuantise(inversZig);
+//Perform inverse DCT
 			List<Mat> inverseDCT = new ArrayList<>();
 			for (Mat m : dequantized) 
 				inverseDCT.add(InverseDCT.inverseDCT(m));
@@ -217,10 +215,9 @@ public class GUI extends JFrame {
 					k++;
 				}
 			}
-			
 			Mat finalIMG = new Mat();
-			newMat.convertTo(finalIMG, CvType.CV_8UC1);
-			Imgcodecs.imwrite("lenaNew.png", finalIMG);
+			newMat.convertTo(finalIMG, CvType.CV_32FC3);
+			Imgcodecs.imwrite("compressed_image.png", finalIMG);
 		});
 
 		// Display the window.

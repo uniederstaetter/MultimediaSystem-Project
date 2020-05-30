@@ -4,6 +4,16 @@ import compression.JPEGCategory;
 
 public class HuffmanDecoder {
 	
+	private static double DCprev=0;
+	
+	public static double getDCprev() {
+		return DCprev;
+	}
+
+	public static void setDCprev(double dCprev) {
+		DCprev = dCprev;
+	}
+
 	public static int assignCoefficant(int cat, int prec) {
 		int start = (int) (Math.pow(2, cat)-1)*(-1);
 		int skip = cat == 1 ? 0 :(int) (Math.pow(2, cat-1)-1)*(-1);

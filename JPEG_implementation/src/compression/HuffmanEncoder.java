@@ -119,7 +119,8 @@ public class HuffmanEncoder {
 		
 		double DCdiff=DCElement-DCprev;
 		JPEGCategory dcCat=assignCategory(DCdiff);
-		DCprev=DCElement;
+		//DCprev=DCElement;
+		//System.out.println("DCPrev in encoding: " + DCprev);
 
 		return dcCat;
 	}

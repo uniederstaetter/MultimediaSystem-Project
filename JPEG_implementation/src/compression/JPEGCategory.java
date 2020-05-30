@@ -11,6 +11,8 @@ public class JPEGCategory {
 	private int runlength;	// The RLE of the coefficient.
 	private boolean endOfBlock;
 	
+	private static double prev = 0;
+	
 	/** Constructor. */
 	public JPEGCategory(double coeff, int cat, double prec) {
 		this.setCoeff(coeff);
@@ -20,6 +22,7 @@ public class JPEGCategory {
 	public JPEGCategory() {
 		
 	}
+	private static double prevNew=0;
 	
 	public double getCoeff() {
 		return coeff;
@@ -123,9 +126,15 @@ public class JPEGCategory {
 			}
 			
 		}
-		this.coeff=HuffmanDecoder.assignCoefficant(this.cat, (int)this.prec)/*+prev*/;
-		//System.out.println(prev);
-		//prev=(int)this.coeff;
+		//this.coeff=HuffmanDecoder.assignCoefficant(this.cat, (int)this.prec);//DC Element
+		
+		this.coeff=HuffmanDecoder.assignCoefficant(this.cat, (int)this.prec)+prev;
+		
+		//this.coeff = this.coeff + HuffmanDecoder.getDCprev();
+		
+		//HuffmanDecoder.setDCprev(this.coeff);
+		
+		
 	}
 	
 	public void huffmanDecodeAC(String huffmanString) {
