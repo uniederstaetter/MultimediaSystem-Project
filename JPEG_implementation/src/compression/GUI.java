@@ -21,12 +21,16 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.imgcodecs.Imgcodecs;
+
+import com.sun.tools.sjavac.server.SysInfo;
 
 import decompression.BlockOrganisor;
-import decompression.HuffmanDecoder;
+import decompression.InverseDCT;
+import decompression.InverseQuantization;
 import decompression.InverseZigZag;
-import decompression.ReverseDPCM;
 
 public class GUI extends JFrame {
 
@@ -53,7 +57,7 @@ public class GUI extends JFrame {
 
 	private Image img; // Image the user chooses to be compressed.
 	private String filepath; // File the user opens
-	private final static String defaultImgPath = "lena_grey.png"; // The path of the default image.
+	private final static String defaultImgPath = "barbara.tif"; // The path of the default image.
 	Image selectedImg;
 
 	public GUI() {
@@ -109,7 +113,7 @@ public class GUI extends JFrame {
 
 		doCompression.addActionListener(event -> {
 
-			List<Mat> dct_converted = ForwardDCT.divideBlocksDCT(defaultImgPath);
+			List<Mat> dct_converted = ForwardDCT.divideBlocksDCT(filepath != null ? filepath : defaultImgPath);
 
 			List<Mat> quantised = Quantization.quantise(dct_converted);
 
@@ -126,10 +130,9 @@ public class GUI extends JFrame {
 			List<String> encodedList = new ArrayList<>();
 //				double rng  = DPCM.getRange(zigZag);
 //				double offSet=DPCM.getOffSet();
-			
 	
 
-
+			int countZigs = 0;
 			for (double[] zig : zigZag) {
 				// System.out.println("DC Element before: "+zig[0]);
 //					double lvl = DPCM.quantiseError(zig[0], rng);
@@ -150,15 +153,16 @@ public class GUI extends JFrame {
 				List<JPEGCategory> rle = HuffmanEncoder.RLE(zig);
 		
 				for (JPEGCategory r : rle) {
+					countZigs++;
 //					System.out.println("cat: " + r.getCat() + "prec: " + r.getPrec() + " coeff: "
 //								+ r.getCoeff()+" run: "+r.getRunlength());
 					encodedList.add(r.huffmanEncode());
 				}
 			}
+			 
 			//System.out.println("_____________");
 
 			List<String[]> encodedBlocks = BlockOrganisor.createBlocks(encodedList);
-			System.out.println(zigZag.size());
 			List<JPEGCategory[]> decodedBlocks = new ArrayList<>(); 
 		
 			for (int j = 0; j < encodedBlocks.size(); j++) {
@@ -177,9 +181,77 @@ public class GUI extends JFrame {
 				}
 			decodedBlocks.add(block);
 			}
-			for (int i = 0; i < decodedBlocks.size(); i++)
-				System.out.println(InverseZigZag.invert(decodedBlocks.get(i)).dump());
-
+			List<Mat> inversZig = new ArrayList<>();
+			for (int i = 0; i < decodedBlocks.size(); i++) {
+				inversZig.add(InverseZigZag.invert(decodedBlocks.get(i)));
+			}
+			List<Mat> dequantized = InverseQuantization.inverseQuantise(inversZig);
+			List<Mat> inverseDCT = new ArrayList<>();
+			for (Mat m : dequantized) 
+				inverseDCT.add(InverseDCT.inverseDCT(m));
+			
+			Mat newMat = new Mat(ForwardDCT.getMatRows(), ForwardDCT.getMatCols(), CvType.CV_64FC1);
+			
+			Mat[] allMats = new Mat[inverseDCT.size()];
+			allMats = inverseDCT.toArray(allMats);
+			double[] values = new double[ForwardDCT.getMatRows()* ForwardDCT.getMatCols()];
+			
+			List<Mat[]> chenesoio = new ArrayList<>(); 
+			for (int i = 0; i < allMats.length; i += ForwardDCT.getMatCols()/8) {
+				Mat[] mats = new Mat[ForwardDCT.getMatCols()/8];
+				for (int j = 0; j < mats.length; j++) {
+					mats[j] = allMats[i];
+				}
+				chenesoio.add(mats);
+			}
+			
+			int k =0;
+			int row = 0;
+			for (int i = 0; i < chenesoio.size(); i++) {
+				for (int j = 0; j < chenesoio.get(i).length; j++) {
+					for (int l = 0; l < chenesoio.get(i)[j].cols(); l++) {
+						values[k] = chenesoio.get(i)[j].get(row,l)[0];
+						k++;
+					}
+				}
+				row++;
+			}
+			
+			System.out.println("values " + values.length);
+			
+			
+			System.out.println("ImageRows " + ForwardDCT.getMatRows());
+			System.out.println("ImageCols " + ForwardDCT.getMatCols());
+			System.out.println("Chenesoio " + chenesoio.size());
+//			int k = 0;
+//			for (int i = 0; i < allMats.length; i++) {
+//				for (int j = 0; j < allMats[i].rows(); j++) { 
+//					for (int l = 0; l < allMats[i].cols(); l++) {
+//						values[k] = allMats[i].get(j, l)[0];
+//						k++;
+//					}
+//				}
+//			}
+//			newMat.put(0, 0, values);
+//			for (int i = 0; i < inverseDCT.size(); i += ForwardDCT.getMatRows()) {
+//				for (int j = 0; j < ForwardDCT.getMatCols(); j++) {
+//					double[] data = matToArr(inverseDCT.get(k)); 
+//					newMat.put(i,j, data);
+//					k++;
+//				}
+//			}
+			
+//			System.out.println("Rows " + newMat.rows() + " Cols: " + newMat.cols());
+			
+//			Mat finalIMG = new Mat();
+//			newMat.convertTo(finalIMG, CvType.CV_8UC1);
+//			
+//			for (int i = 0; i < 10; i++) {
+//				for (int j= 0; j < finalIMG.row(i).cols(); j++) {
+//					System.out.println(finalIMG.get(i,j)[0]);
+//				}
+//			}
+//			Imgcodecs.imwrite("lenaNew.png", finalIMG);
 		});
 
 		// Display the window.
@@ -191,6 +263,18 @@ public class GUI extends JFrame {
 		this.setBounds(widthscreen / 2 - width / 2, heightscreen / 2 - height / 2, width, height);
 		this.setVisible(true); // Make the window visible.
 
+	}
+	
+	private double[] matToArr(Mat mat) {
+		double[] res = new double[mat.cols()*mat.rows()];
+		int k = 0;
+		for (int i = 0; i < mat.rows(); i++) {
+			for (int j =0; j< mat.cols(); j++) {
+				res[k] = mat.get(i, j)[0];
+				k++;
+			}
+		}
+		return res;
 	}
 
 	// Used to set up the default selected picture for the compression

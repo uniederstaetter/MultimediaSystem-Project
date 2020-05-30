@@ -75,6 +75,8 @@ public class HuffmanEncoder {
 		return position;
 	}
 	
+	private static int count = 0; 
+	
 	public static ArrayList<JPEGCategory> RLE(double[] arr) {
 		ArrayList<JPEGCategory> result = new ArrayList<>();
 		int c = 0;
@@ -101,11 +103,16 @@ public class HuffmanEncoder {
 				c = 0;
 			}
 		}
-		
+		count++;
 		JPEGCategory EOB = new JPEGCategory(0,0, 0);
+		EOB.setEndOfBlock(true);
 		EOB.setRunlength(0);
 		result.add(EOB);
 		return result;
+	}
+	
+	public static int getCOunter() {
+		return count;
 	}
 	
 	public static JPEGCategory RLEDC(double DCElement) {

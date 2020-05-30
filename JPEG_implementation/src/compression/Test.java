@@ -39,6 +39,10 @@ public class Test {
 //		int coeff=HuffmanDecoder.assignCoefficant(3, 3);
 //		System.out.println(coeff);
 		
+		String test = "1;2;3;4;5";
+		String[] test2 = test.split(";");
+		System.out.println(test2.length);
+		
 }
 
 }

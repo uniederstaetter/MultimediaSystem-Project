@@ -5,7 +5,7 @@ import java.util.List;
 import org.opencv.core.Mat;
 
 public class ZigZag {
-	
+	 
 	
 	public static List<double []> zigZag(List<Mat> mat) {//gets each block 8*8 block of DCT
 		List<double []> zigZagResult = new ArrayList<>();

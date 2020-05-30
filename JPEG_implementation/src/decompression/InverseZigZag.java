@@ -24,7 +24,7 @@ public class InverseZigZag {
 				data[9], data[11], data[18], data[24], data[31], data[40], data[44], data[53],
 				data[10], data[19], data[23], data[32], data[39], data[45], data[52], data[54],
 				data[20], data[22], data[33], data[38], data[46], data[51], data[55], data[60],
-				data[21], data[34], data[37], data[47], data[50], data[56], data[59], data[61],
+				data[21], data[34], data[37], data[47], data[50], data[56], data[59], data[61], 
 				data[35], data[36], data[48], data[49], data[57], data[58], data[62], data[63]
 		};
 
@@ -34,11 +34,16 @@ public class InverseZigZag {
 	}
 	
 	public static double[] convertToDouble(JPEGCategory input) {
+		if (input.getRunlength() < 0)
+			System.out.println("RLE " + input.getRunlength());
 		double[] values = new double[input.getRunlength()+1];
 		for (int i = 0; i < input.getRunlength(); i++) {
 			values[i] = 0;
 		}
-		values[values.length-1] = input.getCoeff();
+		if (values.length > 1)
+			values[values.length-1] = input.getCoeff();
+		else 
+			values[0] = input.getCoeff();
 		return values;
 	}
 

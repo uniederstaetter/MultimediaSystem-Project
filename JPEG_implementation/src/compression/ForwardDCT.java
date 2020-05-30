@@ -9,6 +9,9 @@ import org.opencv.core.Mat;
 import utils.Utils;
 
 public class ForwardDCT {
+	 
+	private static int matCols = 0;
+	private static int matRows = 0;
 
 	/**
 	 * Reads an image from the given path and converts it to a matrix.
@@ -20,6 +23,8 @@ public class ForwardDCT {
 	 */
 	public static ArrayList<Mat> divideBlocksDCT(String path) {
 		Mat mat = Utils.imgToMat(path);
+		matCols = mat.cols();
+		matRows = mat.rows();
 		if (mat != null) {
 
 			ArrayList<Mat> blocks = new ArrayList<Mat>();
@@ -33,9 +38,25 @@ public class ForwardDCT {
 					blocks.add(dct_subMat);
 				}
 			}
-			return blocks;
+			return blocks; 
 		}
 		return null;
+	}
+
+	public static int getMatCols() {
+		return matCols;
+	}
+
+	public static void setMatCols(int matCols) {
+		ForwardDCT.matCols = matCols;
+	}
+
+	public static int getMatRows() {
+		return matRows;
+	}
+
+	public static void setMatRows(int matRows) {
+		ForwardDCT.matRows = matRows;
 	}
 
 	/**

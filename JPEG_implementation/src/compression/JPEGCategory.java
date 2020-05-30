@@ -9,7 +9,7 @@ public class JPEGCategory {
 	private int cat;		// The category of the coefficient.
 	private double prec;	// The precision of the coefficient.
 	private int runlength;	// The RLE of the coefficient.
-	private static int prev=0;
+	private boolean endOfBlock;
 	
 	/** Constructor. */
 	public JPEGCategory(double coeff, int cat, double prec) {
@@ -83,22 +83,28 @@ public class JPEGCategory {
 		int index=this.runlength*10+this.cat;
 		
 		//if EOB
-		if(this.runlength==0&&this.cat==0) {
+		if(this.isEndOfBlock()) {
 			return "1010";
 		}
 		int position=(int)this.prec;
 		//System.out.println(this.runlength);
-		if(this.cat > 0)
+		if(this.cat > 0) {
 			return HuffmannTable.huffmanJPG[index]+Utils.convertIntToBinary(position, this.cat);
-		
+		}
 		return HuffmannTable.huffmanJPG[index];
 	}
 	
+	public boolean isEndOfBlock() {
+		return endOfBlock;
+	}
+	public void setEndOfBlock(boolean endOfBlock) {
+		this.endOfBlock = endOfBlock;
+	}
 	public String huffmanEncodeDC() {
 		int position=(int)this.prec;
 		String huffmanString=HuffmannTable.huffmannDC[this.cat]+Utils.convertIntToBinary(position, this.cat);
 		
-		return huffmanString;
+		return huffmanString; 
 	}
 	
 	public void huffmanDecodeDC(String huffmanString) {
@@ -138,19 +144,32 @@ public class JPEGCategory {
 		
 		for(int i=HuffmannTable.huffmanJPG.length-1; i>=0; i--) {
 			int digits=HuffmannTable.huffmanJPG[i].length();
-			if(digits<=huffmanString.length()) {
+			if(digits<huffmanString.length()) {
 				String sub=huffmanString.substring(0, digits);
 				if(sub.equals(HuffmannTable.huffmanJPG[i])) {
 					String postSub=huffmanString.substring(digits);
-					this.cat= sub.length() == huffmanString.length() ? 0 : postSub.length();
-					this.prec= sub.length() == huffmanString.length() ? 0 : Integer.parseInt(postSub,2);
-					this.runlength= i < 10 ? 0 : (i/10)-this.cat;
+					this.cat= postSub.length();
+					this.prec= Integer.parseInt(postSub,2);
+					this.runlength =(i - this.cat)/10;
+					
+//					(rle*10)+cat = index //-cat
+//					rle*10 = index -cat // 10
+//					rle = (index-cat) / 10
+					
+					if (this.runlength < 0) {
+						System.out.println("prec " + this.getPrec());
+						System.out.println("cat " + this.getCat());
+						System.out.println("runlength " + this.getRunlength());
+						System.out.println("i " + i);
+					}
 //					System.out.println("index is: "+i);
 				}
 			}
 		}
 		
 		this.coeff=HuffmanDecoder.assignCoefficant(this.cat, (int)this.prec);
+		if (this.runlength < 0)
+		System.out.println("COEF " + this.getCoeff());
 	}
 	
 	

@@ -3,7 +3,7 @@ package compression;
 public class HuffmannTable{
 
 	public static String[] huffmanJPG={
-		"00", //rl = 0, cat = 0 
+		"00", //rl = 0, cat = 0  
 		"01", //rl = 0, cat = 1
 		"100", //rl = 0 cat = 2...
 		"1011",
