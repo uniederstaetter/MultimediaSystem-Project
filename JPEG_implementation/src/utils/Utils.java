@@ -5,28 +5,9 @@ import org.opencv.imgcodecs.Imgcodecs;
 
 public class Utils {
 
-	/**
-	 * Takes a integer value as input and converts it to an String representing
-	 * the binary number of the value with a given length.
-	 * Example:
-	 * value = 3 and digits = 4 the result is '0011'.
-	 * @param value The value to be converted.
-	 * @param digits The number of digits of the result.
-	 * @return The converted value to binary as a String.
-	 */
 	
-	private static double encodedPred = 0;
-	private static double decodedPred = 0;
-	
-	
-	public static double getEncodedPred() {
-		return encodedPred;
-	}
 
-	public static void setEncodedPred(double encodedPred) {
-		Utils.encodedPred = encodedPred;
-		//System.out.println(encodedPred);
-	}
+	private static double decodedPred = 0;
 
 	public static double getDecodedPred() {
 		return decodedPred;
@@ -37,6 +18,15 @@ public class Utils {
 		System.out.println(decodedPred);
 	}
 
+	/**
+	 * Takes a integer value as input and converts it to an String representing
+	 * the binary number of the value with a given length.
+	 * Example:
+	 * value = 3 and digits = 4 the result is '0011'.
+	 * @param value The value to be converted.
+	 * @param digits The number of digits of the result.
+	 * @return The converted value to binary as a String.
+	 */
 	public static String convertIntToBinary(int value, int digits) {
 		String ret = Integer.toBinaryString(value);
 		
@@ -72,5 +62,17 @@ public class Utils {
 			return null;
 		}
 		return ret;
+	}
+	
+	public static double[] matToArr(Mat mat) {
+		double[] res = new double[mat.cols()*mat.rows()];
+		int k = 0;
+		for (int i = 0; i < mat.rows(); i++) {
+			for (int j =0; j< mat.cols(); j++) {
+				res[k] = mat.get(i, j)[0];
+				k++;
+			}
+		}
+		return res;
 	}
 }

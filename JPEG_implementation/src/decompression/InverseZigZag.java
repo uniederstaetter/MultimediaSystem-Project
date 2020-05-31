@@ -3,7 +3,7 @@ package decompression;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 
-import compression.JPEGCategory;
+import data.JPEGCategory;
 
 public class InverseZigZag {
 	

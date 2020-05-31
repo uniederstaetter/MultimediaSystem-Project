@@ -8,10 +8,28 @@ import org.opencv.core.Mat;
 
 import utils.Utils;
 
+/**
+ * Implementation of the forward DCT.
+ * 
+ * @author Merlante Simonluca
+ * @author Niederstätter Ulrike
+ * @author Unterrainer Stephan
+ *
+ */
 public class ForwardDCT {
 	 
-	private static int matCols = 0;
-	private static int matRows = 0;
+	private static int matCols = 0;	// Number of columns of the converted image matrix.
+	private static int matRows = 0;	// Number of rows of the converted image matrix.
+	
+	/** @return Number of columns of the matrix. */
+	public static int getMatCols() {
+		return matCols;
+	}
+
+	/**  @return Number of rows of the matrix. */
+	public static int getMatRows() {
+		return matRows;
+	}
 
 	/**
 	 * Reads an image from the given path and converts it to a matrix.
@@ -25,38 +43,18 @@ public class ForwardDCT {
 		Mat mat = Utils.imgToMat(path);
 		matCols = mat.cols();
 		matRows = mat.rows();
-		if (mat != null) {
-
-			ArrayList<Mat> blocks = new ArrayList<Mat>();
-			for (int rowStart = 0, rowEnd = 8; rowEnd <= mat.width(); rowEnd += 8, rowStart += 8) {
-				for (int colStart = 0, colEnd = 8; colEnd <= mat.height(); colEnd += 8, colStart += 8) {
-					// Creates a 8x8 matrix/block.
-					Mat sub = mat.submat(rowStart, rowEnd, colStart, colEnd);
-					// Performs the forward DCT on a matrix/block of 8x8.
-					Mat dct_subMat = forwardDCT(sub);
-					// Adds the matrix/block to the list of blocks after the forward DCT.
-					blocks.add(dct_subMat);
-				}
+		ArrayList<Mat> blocks = new ArrayList<Mat>();
+		for (int rowStart = 0, rowEnd = 8; rowEnd <= mat.width(); rowEnd += 8, rowStart += 8) {
+			for (int colStart = 0, colEnd = 8; colEnd <= mat.height(); colEnd += 8, colStart += 8) {
+				// Creates a 8x8 matrix/block.
+				Mat sub = mat.submat(rowStart, rowEnd, colStart, colEnd);
+				// Performs the forward DCT on a matrix/block of 8x8.
+				Mat dct_subMat = forwardDCT(sub);
+				// Adds the matrix/block to the list of blocks after the forward DCT.
+				blocks.add(dct_subMat);
 			}
-			return blocks; 
 		}
-		return null;
-	}
-
-	public static int getMatCols() {
-		return matCols;
-	}
-
-	public static void setMatCols(int matCols) {
-		ForwardDCT.matCols = matCols;
-	}
-
-	public static int getMatRows() {
-		return matRows;
-	}
-
-	public static void setMatRows(int matRows) {
-		ForwardDCT.matRows = matRows;
+		return blocks; 
 	}
 
 	/**
@@ -82,6 +80,4 @@ public class ForwardDCT {
 
 		return dct_convert;
 	}
-	
-	// forwardDCT looks still a bit strange to me due to all those conversions.
 }

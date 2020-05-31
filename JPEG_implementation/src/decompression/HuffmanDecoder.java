@@ -1,6 +1,6 @@
 package decompression;
 
-import compression.JPEGCategory;
+import data.JPEGCategory;
 
 public class HuffmanDecoder {
 	
