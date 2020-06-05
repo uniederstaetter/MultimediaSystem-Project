@@ -224,6 +224,12 @@ public class GUI extends JFrame {
 			// TODO Add label to show step
 			// TODO let the user choose the destination folder
 			// TODO let the user choose the quality factor
+			
+			Mat originalMat = Utils.imgToMat(filepath != null ? filepath : defaultImgPath);
+			Mat origMat = new Mat();
+			originalMat.convertTo(origMat, CvType.CV_32FC3);
+			System.out.println("PSNR: " + Core.PSNR(origMat, finalIMG));
+			
 		});
 
 		// Display the window.

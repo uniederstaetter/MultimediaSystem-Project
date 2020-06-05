@@ -34,8 +34,7 @@ public class InverseZigZag {
 	}
 	
 	public static double[] convertToDouble(JPEGCategory input) {
-		if (input.getRunlength() < 0)
-			System.out.println("RLE " + input.getRunlength());
+		
 		double[] values = new double[input.getRunlength()+1];
 		for (int i = 0; i < input.getRunlength(); i++) {
 			values[i] = 0;

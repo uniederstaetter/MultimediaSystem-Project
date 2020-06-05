@@ -16,8 +16,12 @@ public class Quantization {
 	             49,  64,  78,  87,  103,  121,  120,  101,  
 	             72,  92,  95,  98,  112,  100,  103,   99};
 	
-	static double qualityFactor=100;
+	private static double qualityFactor=85;
 	static Mat quantisMat=fillMat();
+	
+	public static double getQualityFactor() {
+		return qualityFactor;
+	}
 
 	
 	public static Mat fillMat() {

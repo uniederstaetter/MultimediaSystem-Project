@@ -41,7 +41,7 @@ public class Test {
 		
 		String test = "1;2;3;4;5";
 		String[] test2 = test.split(";");
-		System.out.println(test2.length);
+		//System.out.println(test2.length);
 		
 }
 

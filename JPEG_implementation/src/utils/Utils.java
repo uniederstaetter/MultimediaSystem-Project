@@ -15,7 +15,7 @@ public class Utils {
 
 	public static void setDecodedPred(double decodedPred) {
 		Utils.decodedPred = decodedPred;
-		System.out.println(decodedPred);
+		//System.out.println(decodedPred);
 	}
 
 	/**
