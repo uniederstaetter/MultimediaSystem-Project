@@ -220,15 +220,11 @@ public class GUI extends JFrame {
 			newMat.convertTo(finalIMG, CvType.CV_32FC3);
 			// Convert the matrix back to an image.
 			Imgcodecs.imwrite("compressed_image.png", finalIMG);
-			// TODO display decompressed image
-			// TODO Add label to show step
-			// TODO let the user choose the destination folder
-			// TODO let the user choose the quality factor
 			
 			Mat originalMat = Utils.imgToMat(filepath != null ? filepath : defaultImgPath);
 			Mat origMat = new Mat();
 			originalMat.convertTo(origMat, CvType.CV_32FC3);
-			System.out.println("PSNR: " + Core.PSNR(origMat, finalIMG));
+			System.out.println("PSNR: " + Core.PSNR(origMat, finalIMG));	// Calculate Peak Signal-to-Noise Ratio
 			
 		});
 
@@ -250,7 +246,6 @@ public class GUI extends JFrame {
 		try {
 			img = ImageIO.read(defaultFile);
 		} catch (IOException e) {
-			// TODO Open error dialog here.
 			e.printStackTrace();
 		}
 		addImage(img);
@@ -301,14 +296,10 @@ public class GUI extends JFrame {
 			return null;
 		}
 
-		/**
-		 * TODO Thinking about to do it in a different way!
-		 */
 		try {
 			// Read image.
 			selectedImg = ImageIO.read(file);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

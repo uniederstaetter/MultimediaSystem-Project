@@ -3,19 +3,29 @@ package utils;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 
+/**
+ * Implementation of helpful methods.
+ * 
+ * @author Merlante Simonluca
+ * @author Niederstätter Ulrike
+ * @author Unterrainer Stephan
+ *
+ */
 public class Utils {
 
-	
+	private static double decodedPred = 0;	// The prediction used for the decoding.
 
-	private static double decodedPred = 0;
-
+	/** @return The prediction used for the decoding. */
 	public static double getDecodedPred() {
 		return decodedPred;
 	}
-
+	
+	/**
+	 * Sets the decoded prediction to the given value.
+	 * @param decodedPred The decoded prediction.
+	 */
 	public static void setDecodedPred(double decodedPred) {
 		Utils.decodedPred = decodedPred;
-		//System.out.println(decodedPred);
 	}
 
 	/**
@@ -64,6 +74,11 @@ public class Utils {
 		return ret;
 	}
 	
+	/**
+	 * Converts a matrix into a array of double.
+	 * @param mat The matrix.
+	 * @return The values of the matrix as an array of double.
+	 */
 	public static double[] matToArr(Mat mat) {
 		double[] res = new double[mat.cols()*mat.rows()];
 		int k = 0;
