@@ -1,8 +1,8 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -70,10 +70,10 @@ public class GUI extends JFrame {
 	/**
 	 * Global members of the application.
 	 */
-	private Image img; // Image the user chooses to be compressed.
+	private BufferedImage img; // Image the user chooses to be compressed.
 	private String filepath; // File the user opens
 	private final static String defaultImgPath = "lena_grey.png"; // The path of the default image.
-	private Image selectedImg;
+	private BufferedImage selectedImg;
 
 	public GUI() {
 		// Create and set up the window.
@@ -225,7 +225,19 @@ public class GUI extends JFrame {
 			Mat origMat = new Mat();
 			originalMat.convertTo(origMat, CvType.CV_32FC3);
 			System.out.println("PSNR: " + Core.PSNR(origMat, finalIMG));	// Calculate Peak Signal-to-Noise Ratio
-			
+
+			// Display compressed image
+			BufferedImage compressedIMG;
+			File compressedFile = new File("compressed_image.png");
+			try {
+				compressedIMG = ImageIO.read(compressedFile);
+				if (compressedIMG != null) {
+					removeImage();
+					addImage(compressedIMG);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		});
 
 		// Display the window.
@@ -256,7 +268,7 @@ public class GUI extends JFrame {
 	 * 
 	 * @param img The image to be added.
 	 */
-	private void addImage(Image img) {
+	private void addImage(BufferedImage img) {
 		imgLabel = new JLabel(new ImageIcon(img));
 		this.getContentPane().add(imgLabel, BorderLayout.CENTER);
 		this.pack();
