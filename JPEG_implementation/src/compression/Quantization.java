@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.opencv.core.*;
 
+import gui.GUI;
+
 /**
  * Implementation of quantization step.
  * 
@@ -27,13 +29,7 @@ public class Quantization {
 		72, 92, 95, 98, 112, 100, 103,  99 
 	};
 
-	private static double qualityFactor = 85;	// The quality factor used. Must be between 1 and 100.
-	private static Mat quantisMat = fillMat();	// Quantization matrix multiplied by the quality factor.
-
-	/** @return the quality factor. */
-	public static double getQualityFactor() {
-		return qualityFactor;
-	}
+	private static Mat quantisMat;	// Quantization matrix multiplied by the quality factor.
 
 	/**
 	 * Multiplies the quantization matrix with the quality factor and stores it
@@ -41,14 +37,15 @@ public class Quantization {
 	 * @return the quantization matrix multiplied by the quality factor.
 	 */
 	public static Mat fillMat() {
-		double quality = 101 - qualityFactor;
+		double quality = 101 - GUI.getQualityFactor();
+		double[] mQuantisemat = new double[quant_mat.length];
 		
 		for (int i = 0; i < quant_mat.length; i++) {
-			quant_mat[i] = quant_mat[i] * quality;
+			mQuantisemat[i] = quant_mat[i] * quality;
 		}
 		
 		Mat quantmat = new Mat(8, 8, CvType.CV_64FC1);
-		quantmat.put(0, 0, quant_mat);
+		quantmat.put(0, 0, mQuantisemat);
 		
 		return quantmat;
 	}
@@ -60,6 +57,7 @@ public class Quantization {
 	 */
 	public static List<Mat> quantise(List<Mat> mat) {
 		List<Mat> result = new ArrayList<Mat>();
+		quantisMat = fillMat();
 
 		for (int i = 0; i < mat.size(); i++) {
 			Mat submat = mat.get(i);

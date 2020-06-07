@@ -1,6 +1,5 @@
 package gui;
 
-import java.awt.BorderLayout;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -18,6 +17,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JSlider;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.opencv.core.Core;
@@ -66,6 +66,9 @@ public class GUI extends JFrame {
 	private JMenu menu;
 	private JMenuItem openFileItem;
 	private JLabel imgLabel;
+	private JLabel lblQuality;
+	private JSlider slider;
+	private JButton doCompression;
 
 	/**
 	 * Global members of the application.
@@ -74,6 +77,7 @@ public class GUI extends JFrame {
 	private String filepath; // File the user opens
 	private final static String defaultImgPath = "lena_grey.png"; // The path of the default image.
 	private BufferedImage selectedImg;
+	private static int qualityFactor = 50;
 
 	public GUI() {
 		// Create and set up the window.
@@ -82,6 +86,7 @@ public class GUI extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// Disables the functionality to resize the window.
 		this.setResizable(false);
+		this.setLayout(null);
 		// Creates the menu bar.
 		menuBar = new JMenuBar();
 		// Build the menu and add it to the menu bar.
@@ -94,11 +99,34 @@ public class GUI extends JFrame {
 		this.setJMenuBar(menuBar);
 		// Adds the default image to the frame.
 		displayDefault();
+		
+		// Sets the dimension and the position of the window. (Window should open in the
+		// middle of the screen.)
+		int width = this.img.getWidth();
+		int height = this.img.getHeight() + 150;
+		this.setBounds(widthscreen / 2 - width / 2, heightscreen / 2 - height / 2, width, height);
+		
 		// Adding a button for executing the compression
-		JButton doCompression = new JButton("Compress Image");
-		this.getContentPane().add(doCompression, BorderLayout.SOUTH);
-
+		this.doCompression = new JButton("Compress Image");
+		this.doCompression.setBounds(5, this.img.getHeight() + 80, width - 10, 20);
+		this.getContentPane().add(this.doCompression);
+		
+		// Adds a label to show the used quality factor
+		this.lblQuality = new JLabel("Quality factor: " + GUI.qualityFactor);
+		this.lblQuality.setBounds(10, 0, 300, 25);
+		this.getContentPane().add(this.lblQuality);
+		
+		// Adds a slider which gives the possibility to the user to change the quality factor.
+		this.slider = new JSlider(1, 100);
+		this.slider.setBounds(0, 25, width, 25);
+		this.getContentPane().add(this.slider);
+		
 		/** Action listeners. */
+		
+		slider.addChangeListener(event -> {
+			GUI.qualityFactor = slider.getValue();
+			lblQuality.setText("Quality factor: " + GUI.qualityFactor);
+		});
 
 		/**
 		 * Creates an action listener for the menu item "Open". When the user clicks on
@@ -234,6 +262,7 @@ public class GUI extends JFrame {
 				if (compressedIMG != null) {
 					removeImage();
 					addImage(compressedIMG);
+					this.filepath = compressedFile.getAbsolutePath();
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -241,14 +270,7 @@ public class GUI extends JFrame {
 		});
 
 		// Display the window.
-		this.pack(); // Adjust components of the window.
-		// Sets the dimension and the position of the window. (Window should open in the
-		// middle of the screen.)
-		int width = this.getWidth();
-		int height = this.getHeight();
-		this.setBounds(widthscreen / 2 - width / 2, heightscreen / 2 - height / 2, width, height);
 		this.setVisible(true); // Make the window visible.
-
 	}
 
 	// Used to set up the default selected picture for the compression
@@ -270,8 +292,17 @@ public class GUI extends JFrame {
 	 */
 	private void addImage(BufferedImage img) {
 		imgLabel = new JLabel(new ImageIcon(img));
-		this.getContentPane().add(imgLabel, BorderLayout.CENTER);
-		this.pack();
+		imgLabel.setBounds(0, 75, img.getWidth(), img.getHeight());
+		this.getContentPane().add(imgLabel);
+		// Update size of windows and components.
+		int width = img.getWidth();
+		int height = img.getHeight() + 150;
+		if (this.slider != null)
+			this.slider.setBounds(0, 25, width, 25);
+		if (this.doCompression != null)
+			this.doCompression.setBounds(5, img.getHeight() + 80, width - 10, 20);
+		this.setBounds(widthscreen / 2 - width / 2, heightscreen / 2 - height / 2, width, height);
+		this.repaint();
 	}
 
 	/** Removes the image from the content pane. */
@@ -316,6 +347,10 @@ public class GUI extends JFrame {
 		}
 
 		return filepath;
+	}
+	
+	public static int getQualityFactor() {
+		return GUI.qualityFactor;
 	}
 
 	public static void main(String[] args) {

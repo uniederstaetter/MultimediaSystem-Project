@@ -6,7 +6,7 @@ import java.util.List;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 
-import compression.Quantization;
+import gui.GUI;
 
 /**
  * Implementation of the dequantization.
@@ -30,7 +30,7 @@ public class InverseQuantization {
 			72, 92, 95, 98, 112, 100, 103,  99 
 		};
 
-	private static Mat quantisMat = fillMat();	// Quantization matrix multiplied by the quality factor.
+	private static Mat quantisMat;	// Quantization matrix multiplied by the quality factor.
 
 	/**
 	 * Multiplies the quantization matrix with the quality factor and stores it
@@ -38,12 +38,14 @@ public class InverseQuantization {
 	 * @return the quantization matrix multiplied by the quality factor.
 	 */
 	public static Mat fillMat() {
-		double quality = 101 - Quantization.getQualityFactor();
+		double quality = 101 - GUI.getQualityFactor();
+		double[] mQuantisemat = new double[quant_mat.length];
+		
 		for (int i = 0; i < quant_mat.length; i++) {
-			quant_mat[i] = quant_mat[i] * quality;
+			mQuantisemat[i] = quant_mat[i] * quality;
 		}
 		Mat quantmat = new Mat(8, 8, CvType.CV_64FC1);
-		quantmat.put(0, 0, quant_mat);
+		quantmat.put(0, 0, mQuantisemat);
 		return quantmat;
 	}
 
@@ -54,6 +56,7 @@ public class InverseQuantization {
 	 */
 	public static List<Mat> inverseQuantise(List<Mat> mat) {
 		List<Mat> result = new ArrayList<Mat>();
+		quantisMat = fillMat();
 
 		for (int i = 0; i < mat.size(); i++) {
 			Mat submat = mat.get(i);
