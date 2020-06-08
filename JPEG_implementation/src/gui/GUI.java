@@ -86,6 +86,7 @@ public class GUI extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// Disables the functionality to resize the window.
 		this.setResizable(false);
+		// Remove the layout manager such that we can decide by our own where to put a component.
 		this.setLayout(null);
 		// Creates the menu bar.
 		menuBar = new JMenuBar();
@@ -100,8 +101,10 @@ public class GUI extends JFrame {
 		// Adds the default image to the frame.
 		displayDefault();
 		
-		// Sets the dimension and the position of the window. (Window should open in the
-		// middle of the screen.)
+		/*
+		 * Sets the dimension and the position of the window. (Window should open in the
+		 * middle of the screen.)
+		 */
 		int width = this.img.getWidth();
 		int height = this.img.getHeight() + 150;
 		this.setBounds(widthscreen / 2 - width / 2, heightscreen / 2 - height / 2, width, height);
@@ -252,7 +255,7 @@ public class GUI extends JFrame {
 			Mat originalMat = Utils.imgToMat(filepath != null ? filepath : defaultImgPath);
 			Mat origMat = new Mat();
 			originalMat.convertTo(origMat, CvType.CV_32FC3);
-			System.out.println("PSNR: " + Core.PSNR(origMat, finalIMG));	// Calculate Peak Signal-to-Noise Ratio
+//			System.out.println("PSNR: " + Core.PSNR(origMat, finalIMG));	// Calculate Peak Signal-to-Noise Ratio
 
 			// Display compressed image
 			BufferedImage compressedIMG;
@@ -270,7 +273,7 @@ public class GUI extends JFrame {
 		});
 
 		// Display the window.
-		this.setVisible(true); // Make the window visible.
+		this.setVisible(true);
 	}
 
 	// Used to set up the default selected picture for the compression
@@ -349,6 +352,7 @@ public class GUI extends JFrame {
 		return filepath;
 	}
 	
+	/** @return the quality factor used for the quantization and dequantization. */
 	public static int getQualityFactor() {
 		return GUI.qualityFactor;
 	}
