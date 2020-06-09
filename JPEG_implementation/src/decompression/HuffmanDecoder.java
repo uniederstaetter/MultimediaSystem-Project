@@ -46,17 +46,16 @@ public class HuffmanDecoder {
 	 */
 	public static int[] getValues(int cat) {
 		int start = (int) (Math.pow(2, cat) - 1) * (-1);	// Calculates the first coefficient of the given category.
-		int skip = cat == 1 ? 0 : (int) (Math.pow(2, cat - 1) - 1) * (-1);	// Calculates the first coefficient of the previous category.
-		int end = Math.abs(start);	// The last coefficient of the given category.
-		int skipEnd = Math.abs(skip);	// The last coefficient of the previous category.
+		int end = cat == 1 ? 0 : (int) (Math.pow(2, cat - 1) - 1) * (-1);	// Calculates the first coefficient of the previous category.
 		int[] numbers = new int[(int) Math.pow(2, cat)];	// Number of coefficients is always 2^category.
-		int j = 0;
+		int neg = 0;
+		int pos = numbers.length - 1;
 		
-		for (int i = start; i <= end; i++) {
-			if (i < skip || i > skipEnd) {	// Skip the elements of the previous category.
-				numbers[j] = i;
-				j++;
-			}
+		for (int i = start; i < end; i++) {
+			numbers[neg] = i;
+			numbers[pos] = i * (-1);
+			neg++;
+			pos--;
 		}
 		return numbers;
 	}
